@@ -14,7 +14,7 @@ exports.getAllPosts = async (req, res) => {
       })
       .sort({ createdAt: -1 });
 
-    res.render('user/home', {
+    res.render('user/index', {
       title: 'All Posts',
       posts,
       user: req.session.user || null,

@@ -131,7 +131,7 @@ app.use('/admin/settings', adminSettingsRoutes);
 // ============================
 // 🏠 Default route
 // ============================
-app.get('/', (req, res) => res.redirect('/home'));
+app.get('/', (req, res) => res.redirect('/index'));
 
 // ============================
 // 🗄️ Connect to MongoDB & start server

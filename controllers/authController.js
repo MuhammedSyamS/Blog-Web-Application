@@ -40,7 +40,7 @@ exports.postLogin = async (req, res) => {
     };
 
     req.flash('success_msg', 'Successfully logged in!');
-    res.redirect('/home');
+    res.redirect('/index');
   } catch (err) {
     console.error('Login error:', err);
     req.flash('error_msg', 'Something went wrong. Please try again.');
