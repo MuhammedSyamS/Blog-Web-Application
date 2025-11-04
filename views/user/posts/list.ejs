@@ -1,0 +1,55 @@
+<%- include('../../partials/header', { title: 'All Posts' }) %>
+
+<link rel="stylesheet" href="/css/posts-list.css">
+
+<div class="posts-wrapper container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="page-title">📰 All Blog Posts</h2>
+    <a href="/posts/new" class="btn btn-primary">+ Create New Post</a>
+  </div>
+
+  <% if (posts.length === 0) { %>
+    <div class="no-posts text-center p-5">
+      <img src="/images/empty.svg" alt="No posts" class="empty-img mb-3">
+      <h4>No posts found</h4>
+      <p class="text-muted">Start by creating your first post!</p>
+      <a href="/posts/new" class="btn btn-outline-primary mt-2">Create Post</a>
+    </div>
+  <% } else { %>
+    <div class="table-responsive shadow-sm rounded">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Date</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% posts.forEach(function(post) { %>
+            <tr>
+              <td>
+                <a href="/posts/<%= post._id %>" class="post-title"><%= post.title %></a>
+              </td>
+              <td><%= post.author ? post.author.name : 'Anonymous' %></td>
+              <td><%= new Date(post.createdAt).toLocaleDateString() %></td>
+              <td class="text-center">
+                <% if (user && post.author && user._id.toString() === post.author._id.toString()) { %>
+                  <a href="/posts/<%= post._id %>/edit" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                  <form action="/posts/<%= post._id %>?_method=DELETE" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                  </form>
+                <% } else { %>
+                  <span class="text-muted small">No actions</span>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,68 @@
+
+<% title = post.title %>
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold mb-0">📝 Post Details</h2>
+    <a href="/admin/posts" class="btn btn-secondary btn-sm">
+      ← Back to Posts
+    </a>
+  </div>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body">
+      <h3 class="fw-bold"><%= post.title %></h3>
+      <p class="text-muted mb-3">
+        <i class="bi bi-person-circle"></i> 
+        <%= post.author ? post.author.name : 'Unknown Author' %> 
+        &nbsp; | &nbsp; 
+        <i class="bi bi-calendar-event"></i> 
+        <%= new Date(post.createdAt).toLocaleString() %>
+      </p>
+
+      <% if (post.images && post.images.length > 0) { %>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Images:</label>
+          <div class="d-flex flex-wrap">
+            <% post.images.forEach(function(img) { %>
+              <div class="me-2 mb-2">
+                <img src="<%= img.url %>" 
+                     class="img-thumbnail shadow-sm" 
+                     width="140" 
+                     height="100"
+                     style="object-fit: cover;" 
+                     alt="Post Image">
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      <% } %>
+
+      <div class="mb-4">
+        <label class="form-label fw-semibold">Content:</label>
+        <div class="border rounded p-3 bg-light">
+          <%- post.content %> <!-- Allows HTML if included in post -->
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Status:</label>
+        <span class="badge 
+          <%= post.status === 'published' ? 'bg-success' 
+              : post.status === 'draft' ? 'bg-secondary' 
+              : 'bg-warning text-dark' %>">
+          <%= post.status.charAt(0).toUpperCase() + post.status.slice(1) %>
+        </span>
+      </div>
+
+      <div class="mt-4">
+        <a href="/admin/posts/<%= post._id %>/edit" class="btn btn-warning me-2">
+          <i class="bi bi-pencil-square"></i> Edit Post
+        </a>
+        <a href="/admin/posts" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left"></i> Back to Posts
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

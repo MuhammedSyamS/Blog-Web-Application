@@ -1,0 +1,72 @@
+<%- include('../../partials/header', { title: 'Create New Post' }) %>
+
+<link rel="stylesheet" href="/css/style.css">
+
+<div class="create-post-wrapper">
+  <div class="create-post-container">
+    <h2 class="page-title">📝 Create New Post</h2>
+    <p class="text-muted mb-4">
+      Share your thoughts with the world. Add a catchy title, upload one or more images, and write your story!
+    </p>
+
+    <!-- ✅ Multiple Image Upload Form -->
+    <form action="/posts/new" method="POST" enctype="multipart/form-data" id="createPostForm">
+
+      <!-- Post Title -->
+      <div class="mb-3">
+        <label for="title" class="form-label">Post Title</label>
+        <input type="text" id="title" name="title" class="form-control" placeholder="Enter your post title" required>
+      </div>
+
+      <!-- Upload Images -->
+      <div class="mb-3">
+        <label for="images" class="form-label">Upload Images</label>
+        <input 
+          type="file" 
+          id="images" 
+          name="images" 
+          class="form-control" 
+          accept="image/*" 
+          multiple 
+          onchange="previewImages(event)"
+        >
+        <div class="image-preview mt-3" id="imagePreview"></div>
+      </div>
+
+      <!-- Post Content -->
+      <div class="mb-3">
+        <label for="content" class="form-label">Post Content</label>
+        <textarea id="content" name="content" class="form-control" rows="8" placeholder="Write something amazing..." required></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary w-100">Publish Post</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // 🔹 Preview multiple uploaded images
+  function previewImages(event) {
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+
+    const files = event.target.files;
+    if (files.length > 0) {
+      Array.from(files).forEach(file => {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.alt = 'Image Preview';
+        img.classList.add('preview-img');
+        img.style.width = '120px';
+        img.style.height = '120px';
+        img.style.objectFit = 'cover';
+        img.style.marginRight = '10px';
+        img.style.borderRadius = '8px';
+        preview.appendChild(img);
+      });
+    }
+  }
+</script>
+
+<%- include('../../partials/footer') %>

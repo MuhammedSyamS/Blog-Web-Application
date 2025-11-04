@@ -1,0 +1,56 @@
+
+<% title = 'Admin Settings' %>
+
+<div class="container mt-4">
+  <h2 class="mb-4 text-center fw-bold">⚙️ Site Settings</h2>
+
+  <% if (success_msg) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <%= success_msg %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+
+  <% if (error_msg) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <%= error_msg %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% } %>
+
+  <div class="card shadow-sm border-0 p-4 mx-auto" style="max-width: 600px;">
+    <form action="/admin/settings" method="POST">
+      <div class="mb-3">
+        <label for="siteTitle" class="form-label fw-semibold">Site Title</label>
+        <input 
+          type="text" 
+          id="siteTitle" 
+          name="siteTitle" 
+          class="form-control" 
+          value="<%= settings.siteTitle || '' %>" 
+          placeholder="Enter your site title"
+          required
+        >
+      </div>
+
+      <div class="form-check form-switch mb-4">
+        <input 
+          class="form-check-input" 
+          type="checkbox" 
+          id="allowRegistrations" 
+          name="allowRegistrations"
+          <%= settings.allowRegistrations ? 'checked' : '' %>
+        >
+        <label class="form-check-label fw-semibold" for="allowRegistrations">
+          Allow New User Registrations
+        </label>
+      </div>
+
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary fw-semibold">
+          💾 Save Settings
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

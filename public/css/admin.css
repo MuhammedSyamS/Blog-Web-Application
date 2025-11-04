@@ -1,0 +1,103 @@
+/* === Global Admin Styles === */
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #212529;
+}
+
+.container-fluid {
+  max-width: 1200px;
+}
+
+/* === Headings === */
+h2, h3, h4 {
+  font-weight: 600;
+  color: #212529;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+/* === Tables === */
+.table {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.08);
+}
+
+.table th {
+  background-color: #f1f3f5;
+  font-weight: 600;
+  text-align: center;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+/* === Buttons === */
+.btn {
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.btn-outline-info:hover {
+  background-color: #0dcaf0;
+  color: #fff;
+}
+
+.btn-outline-warning:hover {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+/* === Badges === */
+.badge {
+  font-size: 0.8rem;
+  padding: 0.5em 0.75em;
+  border-radius: 0.4rem;
+}
+
+/* === Search Bar === */
+.input-group-text {
+  background-color: #0d6efd !important;
+  color: #fff !important;
+}
+
+/* === Cards === */
+.card {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* === Navigation === */
+.navbar {
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.navbar a {
+  color: #0d6efd;
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* === Table Hover === */
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* === Icons === */
+.bi {
+  vertical-align: middle;
+}

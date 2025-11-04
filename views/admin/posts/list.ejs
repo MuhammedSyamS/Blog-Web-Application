@@ -1,0 +1,137 @@
+<% title = 'All Posts' %>
+
+<!-- Bootstrap Icons -->
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+  rel="stylesheet"
+/>
+
+<div class="container py-5">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold mb-1">
+        <i class="bi bi-journal-text text-primary"></i> Manage Posts
+      </h2>
+      <p class="text-muted mb-0">View and manage all published or draft posts.</p>
+    </div>
+    <a href="/admin/dashboard" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left-circle me-1"></i> Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="input-group mb-4 shadow-sm">
+    <span class="input-group-text bg-primary text-white border-0">
+      <i class="bi bi-search"></i>
+    </span>
+    <input
+      type="text"
+      id="postSearch"
+      class="form-control border-0"
+      placeholder="Search by title or author..."
+    />
+  </div>
+
+  <!-- Posts Table -->
+  <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light text-center">
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="postTableBody">
+            <!-- Example Rows -->
+            <tr>
+              <td class="text-center text-muted">1</td>
+              <td><strong>Welcome to My Blog</strong></td>
+              <td>Admin User</td>
+              <td>
+                <span class="badge bg-success">Published</span>
+              </td>
+              <td>03/11/2025</td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-outline-info me-1">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-warning me-1">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td class="text-center text-muted">2</td>
+              <td><strong>Upcoming Features</strong></td>
+              <td>Editor</td>
+              <td>
+                <span class="badge bg-secondary">Draft</span>
+              </td>
+              <td>01/11/2025</td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-outline-info me-1">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-warning me-1">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Optional Filter Script -->
+<script>
+  document.getElementById('postSearch').addEventListener('keyup', function () {
+    const filter = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#postTableBody tr');
+    rows.forEach(row => {
+      const title = row.cells[1]?.innerText.toLowerCase();
+      const author = row.cells[2]?.innerText.toLowerCase();
+      row.style.display =
+        title.includes(filter) || author.includes(filter) ? '' : 'none';
+    });
+  });
+</script>
+
+<style>
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa !important;
+    transition: 0.3s;
+  }
+
+  .badge {
+    font-size: 0.85rem;
+  }
+
+  .btn-outline-info:hover {
+    background-color: #0dcaf0;
+    color: white;
+  }
+
+  .btn-outline-warning:hover {
+    background-color: #ffc107;
+    color: white;
+  }
+
+  .btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+  }
+
+  .btn-outline-success:hover {
+    background-color: #198754;
+    color: white;
+  }
+</style>

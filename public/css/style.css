@@ -1,0 +1,336 @@
+/* Reset some default settings (optional) */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa; /* light grey background */
+}
+
+/* Header / Nav styles */
+header {
+  background-color: #343a40;
+  color: #fff;
+}
+header a.navbar-brand {
+  color: #fff;
+  text-decoration: none;
+}
+header a.navbar-brand:hover {
+  color: #ddd;
+}
+
+/* Card styles for post listings */
+.card img {
+  object-fit: cover;
+}
+.card-footer {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* Buttons for like/comment etc */
+.btn-outline-primary {
+  border-color: #0d6efd;
+  color: #0d6efd;
+}
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+/* Post content & images */
+.post-content img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+.post-content {
+  margin-bottom: 2rem;
+}
+
+/* Comments section */
+#commentsSection {
+  margin-top: 2rem;
+}
+#commentsSection .comment {
+  background-color: #e9ecef;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+/* Profile page tweaks */
+.card-body p {
+  margin-bottom: 0.5rem;
+}
+
+/* Admin panel tweaks */
+.container-fluid {
+  padding: 2rem;
+}
+.card {
+  margin-bottom: 1rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 576px) {
+  .card-body h5 {
+    font-size: 1.1rem;
+  }
+}
+
+/* ---------- Create Post Page Styles ---------- */
+
+/* -------------------------------------------------------
+   🎨 CREATE POST PAGE STYLING
+-------------------------------------------------------- */
+body {
+  background: #f6f8fb;
+  font-family: "Poppins", sans-serif;
+  color: #333;
+}
+
+/* Wrapper for centering */
+.create-post-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 60px 20px;
+}
+
+/* Form container */
+.create-post-container {
+  background: #fff;
+  width: 100%;
+  max-width: 700px;
+  padding: 40px 50px;
+  border-radius: 15px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease-in-out;
+}
+
+.create-post-container:hover {
+  transform: translateY(-3px);
+}
+
+.page-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+  font-size: 1.8rem;
+  color: #2c3e50;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #444;
+}
+
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 10px 14px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.2);
+}
+
+textarea.form-control {
+  resize: vertical;
+}
+
+/* Image preview styling */
+.image-preview {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.image-preview .preview-img {
+  width: 150px;
+  height: 150px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Button styling */
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .create-post-container {
+    padding: 30px 25px;
+  }
+}
+
+/*------------------------------------*/
+/*------------------------------------*/
+/* =============================
+   Global Styles
+============================= */
+
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1000px;
+}
+
+/* =============================
+   Header & Page Titles
+============================= */
+
+h2 {
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 8px;
+  margin-bottom: 20px;
+}
+
+/* =============================
+   Buttons
+============================= */
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  transition: 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* =============================
+   Tables
+============================= */
+
+.table {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.table th {
+  background-color: #f1f3f5;
+  color: #495057;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* =============================
+   Alerts
+============================= */
+
+.alert {
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.alert-success {
+   background-color: #d1e7dd !important;
+  color: #0f5132 !important;
+  border: 1px solid #badbcc;
+}
+
+.alert-danger {
+ background-color: #f8d7da !important;
+  color: #842029 !important;
+  border: 1px solid #f5c2c7;
+
+}
+
+/* =============================
+   Links
+============================= */
+
+a.text-decoration-none {
+  color: #0d6efd;
+  transition: color 0.3s;
+}
+
+a.text-decoration-none:hover {
+  color: #0056b3;
+}
+
+/* =============================
+   Footer
+============================= */
+
+footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6c757d;
+  padding: 20px 0;
+  margin-top: 40px;
+  border-top: 1px solid #dee2e6;
+}
+
+/* =============================
+   Responsive Design
+============================= */
+
+@media (max-width: 768px) {
+  .table th, .table td {
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+  }
+}

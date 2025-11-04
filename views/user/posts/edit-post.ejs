@@ -1,0 +1,103 @@
+<%- include('../../partials/header', { title: 'Edit Post' }) %>
+
+<link rel="stylesheet" href="/css/style.css">
+
+<div class="create-post-wrapper">
+  <div class="create-post-container">
+    <h2 class="page-title">✏️ Edit Post</h2>
+    <p class="text-muted mb-4">
+      Update your title, content, or images. Leave the image field empty to keep existing ones.
+    </p>
+
+    <!-- ✅ Edit Post Form -->
+    <form action="/posts/edit/<%= post._id %>" method="POST" enctype="multipart/form-data" id="editPostForm">
+
+      <!-- Post Title -->
+      <div class="mb-3">
+        <label for="title" class="form-label">Post Title</label>
+        <input 
+          type="text" 
+          id="title" 
+          name="title" 
+          class="form-control" 
+          value="<%= post.title %>" 
+          required
+        >
+      </div>
+
+      <!-- Existing Images Preview -->
+      <% if (post.images && post.images.length > 0) { %>
+        <div class="mb-3">
+          <label class="form-label">Current Images</label>
+          <div class="image-preview d-flex flex-wrap" style="gap: 10px;">
+            <% post.images.forEach(img => { %>
+              <img 
+                src="/uploads/<%= img %>" 
+                alt="Post Image" 
+                class="preview-img" 
+                style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px;"
+              >
+            <% }) %>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- Upload New Images -->
+      <div class="mb-3">
+        <label for="images" class="form-label">Upload New Images (optional)</label>
+        <input 
+          type="file" 
+          id="images" 
+          name="images" 
+          class="form-control" 
+          accept="image/*" 
+          multiple 
+          onchange="previewImages(event)"
+        >
+        <div class="image-preview mt-3" id="imagePreview"></div>
+      </div>
+
+      <!-- Post Content -->
+      <div class="mb-3">
+        <label for="content" class="form-label">Post Content</label>
+        <textarea 
+          id="content" 
+          name="content" 
+          class="form-control" 
+          rows="8" 
+          required
+        ><%= post.content %></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary w-100">Update Post</button>
+      <a href="/posts/<%= post._id %>" class="btn btn-secondary w-100 mt-2">Cancel</a>
+    </form>
+  </div>
+</div>
+
+<script>
+  // 🔹 Preview newly selected images before replacing
+  function previewImages(event) {
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+
+    const files = event.target.files;
+    if (files.length > 0) {
+      Array.from(files).forEach(file => {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.alt = 'New Image Preview';
+        img.classList.add('preview-img');
+        img.style.width = '120px';
+        img.style.height = '120px';
+        img.style.objectFit = 'cover';
+        img.style.marginRight = '10px';
+        img.style.borderRadius = '8px';
+        preview.appendChild(img);
+      });
+    }
+  }
+</script>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,110 @@
+/* =============================
+   Blog Posts List Page
+============================= */
+
+body {
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background: #f5f6fa;
+  color: #212529;
+}
+
+/* Wrapper */
+.posts-wrapper {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Page title */
+.page-title {
+  font-weight: 600;
+  color: #333;
+}
+
+/* Table */
+.table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table th {
+  background-color: #f1f3f5;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  color: #555;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+  transition: 0.2s ease;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+/* Post title links */
+.post-title {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.post-title:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-primary:hover {
+  background: #0d6efd;
+  color: #fff;
+}
+
+.btn-outline-danger:hover {
+  background: #dc3545;
+  color: #fff;
+}
+
+/* No Posts Section */
+.no-posts {
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px dashed #ced4da;
+}
+
+.no-posts h4 {
+  font-weight: 600;
+  color: #495057;
+}
+
+.no-posts p {
+  color: #6c757d;
+}
+
+.empty-img {
+  width: 150px;
+  opacity: 0.8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .posts-wrapper {
+    padding: 20px;
+  }
+
+  .table th, .table td {
+    font-size: 0.9rem;
+  }
+
+  .page-title {
+    font-size: 1.4rem;
+  }
+}
