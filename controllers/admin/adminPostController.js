@@ -1,12 +1,9 @@
-// controllers/admin/adminPostController.js
-
 const Post = require('../../models/Post');
 
 // Get all posts (Admin Dashboard)
 exports.getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find().populate('author');
-    // Use correct view path
     res.render('admin/posts/list', { title: 'All Posts', posts });
   } catch (err) {
     console.error('Error fetching posts:', err);
@@ -78,3 +75,16 @@ exports.updatePost = async (req, res) => {
   }
 };
 
+// 🗑️ Delete Post
+exports.deletePost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    await Post.findByIdAndDelete(postId);
+    req.flash('success_msg', 'Post deleted successfully');
+    res.redirect('/admin/posts');
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    req.flash('error_msg', 'Failed to delete post');
+    res.redirect('/admin/posts');
+  }
+};

@@ -19,23 +19,3 @@ exports.getDashboard = async (req, res) => {
   }
 };
 
-
-// 🔄 Reactivate User Controller
-exports.reactivateUser = async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { isActive: true },
-      { new: true }
-    );
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json({ message: 'User reactivated successfully', user });
-  } catch (error) {
-    console.error('Error reactivating user:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-}

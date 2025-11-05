@@ -70,3 +70,32 @@ exports.deleteUser = async (req, res) => {
     res.redirect('/admin/users');
   }
 };
+
+// ✅ Deactivate User
+exports.deactivateUser = async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.params.id, { isActive: false });
+    req.flash('success_msg', 'User deactivated successfully.');
+    res.redirect('/admin/users'); // reloads the list with updated data
+  } catch (err) {
+    console.error('❌ Error deactivating user:', err);
+    req.flash('error_msg', 'Failed to deactivate user.');
+    res.redirect('/admin/users');
+  }
+};
+
+// 🔄 Reactivate User
+exports.reactivateUser = async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.params.id, { isActive: true });
+    req.flash('success_msg', 'User reactivated successfully.');
+    res.redirect('/admin/users'); // reloads the list with updated data
+  } catch (err) {
+    console.error('❌ Error reactivating user:', err);
+    req.flash('error_msg', 'Failed to reactivate user.');
+    res.redirect('/admin/users');
+  }
+};
+
+
+

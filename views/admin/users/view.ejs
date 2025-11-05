@@ -1,187 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title || 'View User' %></title>
 
-<% title = 'View User' %>
+  <!-- ✅ Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
+  <!-- ✅ Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
 
+  <!-- ✅ Custom Admin CSS -->
+  <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body>
+  <!-- ✅ Admin Navbar -->
+  <%- include('../../partials/admin_nav') %>
 
-<div class="container py-5">
-  <!-- Header -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-      <h2 class="fw-bold mb-1">
-        <i class="bi bi-person-circle text-primary"></i> User Details
-      </h2>
-      <p class="text-muted mb-0">View complete information about this user.</p>
+  <!-- ✅ Main Content -->
+  <main class="container py-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold mb-1">
+          <i class="bi bi-person-circle text-primary"></i> User Details
+        </h2>
+        <p class="text-muted mb-0">View complete information about this user.</p>
+      </div>
+      <a href="/admin/users" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left-circle me-1"></i> Back to Users
+      </a>
     </div>
-    <a href="/admin/users" class="btn btn-outline-secondary">
-      <i class="bi bi-arrow-left-circle me-1"></i> Back to Users
-    </a>
-  </div>
 
-  <!-- User Details Card -->
-  <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-    <div class="card-body p-4">
-      <div class="row align-items-center">
-        <!-- Avatar -->
-        <div class="col-md-3 text-center mb-4 mb-md-0">
-          <div
-            class="bg-light border rounded-circle d-inline-flex align-items-center justify-content-center"
-            style="width: 130px; height: 130px;"
-          >
-            <i class="bi bi-person-fill text-primary" style="font-size: 70px;"></i>
+    <!-- User Details Card -->
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+      <div class="card-body p-4">
+        <div class="row align-items-center">
+          <!-- Avatar -->
+          <div class="col-md-3 text-center mb-4 mb-md-0">
+            <div
+              class="bg-light border rounded-circle d-inline-flex align-items-center justify-content-center"
+              style="width: 130px; height: 130px;"
+            >
+              <i class="bi bi-person-fill text-primary" style="font-size: 70px;"></i>
+            </div>
+          </div>
+
+          <!-- Details -->
+          <div class="col-md-9">
+            <div class="mb-3">
+              <h4 class="fw-semibold text-dark mb-1">
+                <i class="bi bi-person me-2 text-primary"></i> <%= user.name %>
+              </h4>
+              <p class="text-muted mb-3">
+                <i class="bi bi-envelope me-2"></i> <%= user.email %>
+              </p>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <div class="p-3 bg-light rounded-3">
+                  <span class="text-muted small d-block">Role</span>
+                  <strong class="text-dark">
+                    <i
+                      class="bi <%= user.role === 'admin' ? 'bi-shield-lock-fill text-danger' : 'bi-person-badge text-primary' %> me-2"
+                    ></i>
+                    <%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %>
+                  </strong>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="p-3 bg-light rounded-3">
+                  <span class="text-muted small d-block">Registered On</span>
+                  <strong class="text-dark">
+                    <i class="bi bi-calendar-event me-2 text-success"></i>
+                    <%= new Date(user.createdAt).toLocaleDateString() %>
+                  </strong>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="p-3 bg-light rounded-3">
+                  <span class="text-muted small d-block">Account Status</span>
+                  <strong class="<%= user.isActive ? 'text-success' : 'text-danger' %>">
+                    <i
+                      class="bi <%= user.isActive ? 'bi-check-circle-fill' : 'bi-x-circle-fill' %> me-2"
+                    ></i>
+                    <%= user.isActive ? 'Active' : 'Deactivated' %>
+                  </strong>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Details -->
-        <div class="col-md-9">
-          <div class="mb-3">
-            <h4 class="fw-semibold text-dark mb-1">
-              <i class="bi bi-person me-2 text-primary"></i> <%= user.name %>
-            </h4>
-            <p class="text-muted mb-3">
-              <i class="bi bi-envelope me-2"></i> <%= user.email %>
-            </p>
-          </div>
+        <hr class="my-4" />
 
-          <div class="row g-3">
-            <div class="col-sm-6">
-              <div class="p-3 bg-light rounded-3">
-                <span class="text-muted small d-block">Role</span>
-                <strong class="text-dark">
-                  <i
-                    class="bi <%= user.role === 'admin' ? 'bi-shield-lock-fill text-danger' : 'bi-person-badge text-primary' %> me-2"
-                  ></i>
-                  <%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %>
-                </strong>
-              </div>
-            </div>
+        <!-- Action Buttons -->
+        <div class="text-end">
+          <a href="/admin/users/<%= user._id %>/edit" class="btn btn-warning px-4 me-2">
+            <i class="bi bi-pencil-square me-1"></i> Edit User
+          </a>
 
-            <div class="col-sm-6">
-              <div class="p-3 bg-light rounded-3">
-                <span class="text-muted small d-block">Registered On</span>
-                <strong class="text-dark">
-                  <i class="bi bi-calendar-event me-2 text-success"></i>
-                  <%= new Date(user.createdAt).toLocaleDateString() %>
-                </strong>
-              </div>
-            </div>
+          <% if (user.isActive) { %>
+            <button
+              class="btn btn-danger px-4 me-2"
+              data-bs-toggle="modal"
+              data-bs-target="#confirmDeactivateModal"
+            >
+              <i class="bi bi-person-x me-1"></i> Deactivate
+            </button>
+          <% } else { %>
+            <form
+              action="/admin/users/<%= user._id %>/reactivate?_method=PUT"
+              method="POST"
+              class="d-inline"
+            >
+              <button type="submit" class="btn btn-success px-4 me-2">
+                <i class="bi bi-person-check me-1"></i> Reactivate
+              </button>
+            </form>
+          <% } %>
 
-            <div class="col-sm-6">
-              <div class="p-3 bg-light rounded-3">
-                <span class="text-muted small d-block">Account Status</span>
-                <strong
-                  class="<%= user.isActive ? 'text-success' : 'text-danger' %>"
-                >
-                  <i
-                    class="bi <%= user.isActive ? 'bi-check-circle-fill' : 'bi-x-circle-fill' %> me-2"
-                  ></i>
-                  <%= user.isActive ? 'Active' : 'Deactivated' %>
-                </strong>
-              </div>
-            </div>
-          </div>
+          <a href="/admin/users" class="btn btn-secondary px-4">
+            <i class="bi bi-arrow-left me-1"></i> Back to Users
+          </a>
         </div>
       </div>
+    </div>
+  </main>
 
-      <hr class="my-4" />
-
-      <!-- Action Buttons -->
-      <div class="text-end">
-        <a href="/admin/users/<%= user._id %>/edit" class="btn btn-warning px-4 me-2">
-          <i class="bi bi-pencil-square me-1"></i> Edit User
-        </a>
-
-        <% if (user.isActive) { %>
+  <!-- ✅ Deactivate Confirmation Modal -->
+  <div
+    class="modal fade"
+    id="confirmDeactivateModal"
+    tabindex="-1"
+    aria-labelledby="confirmDeactivateLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0">
+          <h5 class="modal-title fw-bold text-danger" id="confirmDeactivateLabel">
+            <i class="bi bi-exclamation-triangle me-2"></i> Confirm Deactivation
+          </h5>
           <button
-            class="btn btn-danger px-4 me-2"
-            data-bs-toggle="modal"
-            data-bs-target="#confirmDeactivateModal"
-          >
-            <i class="bi bi-person-x me-1"></i> Deactivate
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to deactivate <strong><%= user.name %></strong>?  
+          The user will no longer be able to log in.
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
           </button>
-        <% } else { %>
           <form
-            action="/admin/users/<%= user._id %>/reactivate?_method=PUT"
+            action="/admin/users/<%= user._id %>/deactivate?_method=PUT"
             method="POST"
             class="d-inline"
           >
-            <button type="submit" class="btn btn-success px-4 me-2">
-              <i class="bi bi-person-check me-1"></i> Reactivate
+            <button type="submit" class="btn btn-danger">
+              <i class="bi bi-person-x me-1"></i> Confirm Deactivate
             </button>
           </form>
-        <% } %>
-
-        <a href="/admin/users" class="btn btn-secondary px-4">
-          <i class="bi bi-arrow-left me-1"></i> Back to Users
-        </a>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Deactivate Confirmation Modal -->
-<div
-  class="modal fade"
-  id="confirmDeactivateModal"
-  tabindex="-1"
-  aria-labelledby="confirmDeactivateLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold text-danger" id="confirmDeactivateLabel">
-          <i class="bi bi-exclamation-triangle me-2"></i> Confirm Deactivation
-        </h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to deactivate <strong><%= user.name %></strong>?  
-        The user will no longer be able to log in.
-      </div>
-      <div class="modal-footer border-0">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-          Cancel
-        </button>
-        <form
-          action="/admin/users/<%= user._id %>/deactivate?_method=PUT"
-          method="POST"
-          class="d-inline"
-        >
-          <button type="submit" class="btn btn-danger">
-            <i class="bi bi-person-x me-1"></i> Confirm Deactivate
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+  <!-- ✅ Footer -->
+  <%- include('../../partials/footer') %>
 
-<style>
-  .btn-warning {
-    background: linear-gradient(135deg, #ffc107, #e0a800);
-    border: none;
-  }
+  <!-- ✅ Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-  .btn-warning:hover {
-    background: linear-gradient(135deg, #e0a800, #c69500);
-  }
+  <!-- ✅ Inline Styles -->
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
 
-  .btn-outline-secondary:hover {
-    background: #f8f9fa;
-    color: #333;
-  }
+    .card {
+      transition: all 0.3s ease;
+    }
 
-  .card {
-    transition: all 0.3s ease;
-  }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0.8rem 1rem rgba(0, 0, 0, 0.1);
+    }
 
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0.8rem 1rem rgba(0, 0, 0, 0.
-  }
+    .btn-warning {
+      background: linear-gradient(135deg, #ffc107, #e0a800);
+      border: none;
+    }
+
+    .btn-warning:hover {
+      background: linear-gradient(135deg, #e0a800, #c69500);
+    }
+
+    .btn-outline-secondary:hover {
+      background: #f8f9fa;
+      color: #333;
+    }
   </style>
+</body>
+</html>

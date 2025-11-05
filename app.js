@@ -8,9 +8,6 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
-const expressLayouts = require('express-ejs-layouts');
-
-
 
 // ============================
 // ⚙️ Load environment variables
@@ -34,23 +31,17 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Serve static assets
 app.use(express.static(path.join(__dirname, 'public')));
-
-// ✅ Serve uploaded images
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Body parsers
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// ✅ Must be placed BEFORE routes
+
+// ✅ Method override (before routes)
 app.use(methodOverride('_method'));
 
-
-
-app.set('layout', 'layouts/main');  // default, you override in admin views
-app.use(methodOverride('_method'));  // Enable PUT/DELETE override via query string or hidden field
-
-
-
+// Layout default
+app.set('layout', 'layouts/main');
 
 // ============================
 // 🔐 Session & Flash setup
@@ -67,7 +58,6 @@ app.use(flash());
 // ============================
 // 🌍 Global template variables
 // ============================
-// ⚠️ Do NOT call `[0]` — flash returns an array, and calling [0] consumes it early.
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
@@ -75,6 +65,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
 
 
 // ============================
@@ -109,24 +103,11 @@ app.use('/posts', safeImport('./routes/postRoutes'));
 app.use('/posts', safeImport('./routes/likeRoutes'));
 app.use('/', safeImport('./routes/commentRoutes'));
 
-// Admin routes
+// ✅ Admin routes
 app.use('/admin/users', safeImport('./routes/admin/adminUserRoutes'));
 app.use('/admin/posts', safeImport('./routes/admin/adminPostRoutes'));
 app.use('/admin/settings', safeImport('./routes/admin/adminSettingsRoutes'));
-
-// ✅ Import admin routes
-const adminDashboardRoutes = require('./routes/admin/adminDashboardRoutes');
-const adminPostRoutes = require('./routes/admin/adminPostRoutes');
-const adminUserRoutes = require('./routes/admin/adminUserRoutes');
-const adminSettingsRoutes = require('./routes/admin/adminSettingsRoutes');
-
-// ✅ Mount admin routes
-app.use('/admin/dashboard', adminDashboardRoutes);
-app.use('/admin/posts', adminPostRoutes);
-app.use('/admin/users', adminUserRoutes);
-app.use('/admin/settings', adminSettingsRoutes);
-
-
+app.use('/admin/dashboard', safeImport('./routes/admin/adminDashboardRoutes'));
 
 // ============================
 // 🏠 Default route
