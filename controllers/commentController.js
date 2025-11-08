@@ -1,69 +1,66 @@
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
 
-// 📝 Add Comment
+// 📝 Add Comment (AJAX)
 exports.addComment = async (req, res) => {
   try {
     if (!req.session.user) {
-      req.flash('error_msg', 'Please log in to comment.');
-      return res.redirect(`/posts/${req.params.postId}`);
+      return res.status(401).json({ success: false, message: "Login required" });
     }
 
     const postId = req.params.postId;
     const { content } = req.body;
 
     if (!content || !content.trim()) {
-      req.flash('error_msg', 'Comment cannot be empty.');
-      return res.redirect(`/posts/${postId}`);
+      return res.status(400).json({ success: false, message: "Comment cannot be empty" });
     }
 
-    // ✅ Create new comment (timestamps will auto-generate from schema)
     const newComment = await Comment.create({
       post: postId,
       author: req.session.user._id,
       content: content.trim()
     });
 
-    // ✅ Link comment to post
     await Post.findByIdAndUpdate(postId, { $push: { comments: newComment._id } });
 
-    req.flash('success_msg', 'Comment added successfully!');
-    res.redirect(`/posts/${postId}`);
+    res.json({
+      success: true,
+      comment: {
+        _id: newComment._id,
+        content: newComment.content,
+        author: req.session.user.name || "You",
+        createdAt: newComment.createdAt
+      }
+    });
   } catch (err) {
-    console.error('❌ Error adding comment:', err);
-    req.flash('error_msg', 'Failed to add comment.');
-    res.redirect(`/posts/${req.params.postId}`);
+    console.error("Error adding comment:", err);
+    res.status(500).json({ success: false, message: "Failed to add comment" });
   }
 };
 
-
-// 🗑️ Delete Comment
+// 🗑️ Delete Comment (AJAX)
 exports.deleteComment = async (req, res) => {
   try {
     const { postId, commentId } = req.params;
 
     const comment = await Comment.findById(commentId);
     if (!comment) {
-      req.flash('error_msg', 'Comment not found.');
-      return res.redirect(`/posts/${postId}`);
+      return res.status(404).json({ success: false, message: "Comment not found" });
     }
 
     const isAuthor = comment.author.toString() === req.session.user._id.toString();
     const isAdmin = req.session.user.role === 'admin';
 
     if (!isAuthor && !isAdmin) {
-      req.flash('error_msg', 'You are not allowed to delete this comment.');
-      return res.redirect(`/posts/${postId}`);
+      return res.status(403).json({ success: false, message: "Not authorized to delete this comment" });
     }
 
     await Comment.findByIdAndDelete(commentId);
     await Post.findByIdAndUpdate(postId, { $pull: { comments: commentId } });
 
-    req.flash('success_msg', 'Comment deleted successfully.');
-    res.redirect(`/posts/${postId}`);
+    res.json({ success: true, message: "Comment deleted successfully", commentId });
   } catch (err) {
-    console.error('❌ Error deleting comment:', err);
-    req.flash('error_msg', 'Failed to delete comment.');
-    res.redirect(`/posts/${req.params.postId}`);
+    console.error("Error deleting comment:", err);
+    res.status(500).json({ success: false, message: "Failed to delete comment" });
   }
 };

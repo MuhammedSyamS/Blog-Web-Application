@@ -2,6 +2,95 @@
 
 <link rel="stylesheet" href="/css/style.css">
 
+<style>
+  /* 🌫️ Frosted Glass Container */
+  .create-post-wrapper {
+    min-height: 100vh;
+    background: url('/images/bg.jpg') center/cover no-repeat fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+  }
+
+  .create-post-container {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 40px 35px;
+    width: 100%;
+    max-width: 700px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    color: #fff;
+  }
+
+  /* 🧾 Title Styling */
+  .create-post-container .page-title {
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .create-post-container .text-muted {
+    color: white !important;
+    text-align: center;
+  }
+
+  /* 📝 Form Elements */
+  .create-post-container .form-label {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .create-post-container .form-control {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+  }
+
+  .create-post-container .form-control::placeholder {
+    color:white;
+  }
+
+  .create-post-container .form-control:focus {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: #0d6efd;
+    box-shadow: 0 0 8px rgba(13, 110, 253, 0.4);
+  }
+
+  /* 🖼️ Image Preview */
+  .image-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .preview-img {
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease;
+  }
+
+  .preview-img:hover {
+    transform: scale(1.05);
+  }
+
+  /* 🚀 Submit Button */
+  .create-post-container .btn-primary {
+    background-color: #0d6efd;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .create-post-container .btn-primary:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-2px);
+  }
+</style>
+
 <div class="create-post-wrapper">
   <div class="create-post-container">
     <h2 class="page-title">📝 Create New Post</h2>
@@ -61,7 +150,6 @@
         img.style.width = '120px';
         img.style.height = '120px';
         img.style.objectFit = 'cover';
-        img.style.marginRight = '10px';
         img.style.borderRadius = '8px';
         preview.appendChild(img);
       });

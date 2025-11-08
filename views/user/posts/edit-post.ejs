@@ -1,10 +1,126 @@
 <%- include('../../partials/header', { title: 'Edit Post' }) %>
 
-<link rel="stylesheet" href="/css/style.css">
+<style>
+/* ====== GLOBAL BACKGROUND ====== */
+body {
+  background-image: url("/img/StockCake-Mountain_reading_escape_1762572141.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-family: "Poppins", sans-serif;
+  color: #fff;
+}
+
+/* Overlay for better contrast */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  z-index: -1;
+}
+
+/* ====== CONTAINER STYLING ====== */
+.create-post-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 4rem 1rem;
+  min-height: 100vh;
+}
+
+.create-post-container {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(15px);
+  padding: 2.5rem 3rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 700px;
+}
+
+/* ====== PAGE TITLE ====== */
+.page-title {
+  color: #FFD89C;
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 6px rgba(0,0,0,0.4);
+}
+
+/* ====== FORM ELEMENTS ====== */
+.form-label {
+  font-weight: 600;
+  color: #FFD89C;
+}
+
+.form-control {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  transition: 0.3s ease;
+}
+
+.form-control:focus {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #FFD89C;
+  box-shadow: 0 0 8px #FFD89C;
+  color: #fff;
+}
+
+/* ====== IMAGE PREVIEWS ====== */
+.image-preview img {
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+  transition: transform 0.3s ease;
+}
+
+.image-preview img:hover {
+  transform: scale(1.05);
+}
+
+/* ====== BUTTONS ====== */
+.btn-primary {
+  background-color: #FFD89C;
+  border: none;
+  color: #2b2b2b;
+  font-weight: 600;
+  border-radius: 25px;
+  padding: 0.6rem 0;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #ffcb70;
+  box-shadow: 0 0 10px #FFD89C;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  border-radius: 25px;
+  padding: 0.6rem 0;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255,255,255,0.3);
+  transform: translateY(-2px);
+}
+
+/* ====== TEXT ====== */
+.text-muted {
+  color: #e6e6e6 !important;
+}
+</style>
 
 <div class="create-post-wrapper">
   <div class="create-post-container">
-    <h2 class="page-title">✏️ Edit Post</h2>
+    <h2 class="page-title"> Edit Post</h2>
     <p class="text-muted mb-4">
       Update your title, content, or images. Leave the image field empty to keep existing ones.
     </p>
@@ -88,12 +204,12 @@
         const img = document.createElement('img');
         img.src = URL.createObjectURL(file);
         img.alt = 'New Image Preview';
-        img.classList.add('preview-img');
         img.style.width = '120px';
         img.style.height = '120px';
         img.style.objectFit = 'cover';
         img.style.marginRight = '10px';
         img.style.borderRadius = '8px';
+        img.style.boxShadow = '0 5px 15px rgba(0,0,0,0.4)';
         preview.appendChild(img);
       });
     }

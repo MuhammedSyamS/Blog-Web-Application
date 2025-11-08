@@ -7,10 +7,10 @@ const Comment = require('../models/Comment');
 exports.getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find()
-      .populate('author', 'name _id') // populate author info
+      .populate('author', 'name _id')
       .populate({
         path: 'comments',
-        populate: { path: 'author', select: 'name' } // populate comment authors
+        populate: { path: 'author', select: 'name' }
       })
       .sort({ createdAt: -1 });
 
@@ -69,7 +69,6 @@ exports.renderEditForm = async (req, res) => {
       return res.redirect('/posts');
     }
 
-    // Ensure the logged-in user is the author
     if (post.author.toString() !== req.session.user._id.toString()) {
       req.flash('error_msg', 'You are not authorized to edit this post.');
       return res.redirect('/posts');
@@ -83,9 +82,6 @@ exports.renderEditForm = async (req, res) => {
   }
 };
 
-/* -------------------------------------------------------------------------- */
-/* 💾 UPDATE POST                                                             */
-/* -------------------------------------------------------------------------- */
 exports.updatePost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.postId);
@@ -103,10 +99,10 @@ exports.updatePost = async (req, res) => {
     post.title = req.body.title;
     post.content = req.body.content;
 
-    // Add new uploaded images if any
+    // ✅ If new images uploaded, replace old images completely
     if (req.files && req.files.length > 0) {
       const newImages = req.files.map(f => `/uploads/${f.filename}`);
-      post.images.push(...newImages);
+      post.images = newImages; // overwrite old images
     }
 
     await post.save();
@@ -118,6 +114,7 @@ exports.updatePost = async (req, res) => {
     res.redirect('/posts');
   }
 };
+
 
 /* -------------------------------------------------------------------------- */
 /* 🗑️ DELETE POST                                                             */
@@ -131,7 +128,6 @@ exports.deletePost = async (req, res) => {
       return res.redirect('/');
     }
 
-    // Authorization check
     if (
       post.author.toString() !== req.session.user._id.toString() &&
       req.session.user.role !== 'admin'
@@ -209,15 +205,9 @@ exports.toggleLike = async (req, res) => {
     if (!post)
       return res.status(404).json({ success: false, message: 'Post not found.' });
 
-    const alreadyLiked = post.likes.some(
-      (id) => id.toString() === userId.toString()
-    );
-
-    if (alreadyLiked) {
-      post.likes.pull(userId);
-    } else {
-      post.likes.push(userId);
-    }
+    const alreadyLiked = post.likes.some(id => id.toString() === userId.toString());
+    if (alreadyLiked) post.likes.pull(userId);
+    else post.likes.push(userId);
 
     await post.save();
 
@@ -233,40 +223,66 @@ exports.toggleLike = async (req, res) => {
 };
 
 /* -------------------------------------------------------------------------- */
-/* 💬 ADD COMMENT                                                             */
+/* 💬 ADD COMMENT via AJAX                                                    */
 /* -------------------------------------------------------------------------- */
-exports.addComment = async (req, res) => {
+exports.addCommentAjax = async (req, res) => {
   try {
     if (!req.session.user) {
-      req.flash('error_msg', 'Please log in to comment.');
-      return res.redirect(`/posts/${req.params.postId}`);
+      return res.status(401).json({ success: false, message: "Login required" });
+    }
+
+    const { content } = req.body;
+    if (!content || !content.trim()) {
+      return res.status(400).json({ success: false, message: "Comment cannot be empty" });
     }
 
     const postId = req.params.postId;
-    const { content } = req.body;
-
-    if (!content || !content.trim()) {
-      req.flash('error_msg', 'Comment cannot be empty.');
-      return res.redirect(`/posts/${postId}`);
-    }
-
-    // ✅ Create comment (timestamps handled automatically)
     const newComment = await Comment.create({
       post: postId,
       author: req.session.user._id,
       content: content.trim(),
     });
 
-    // ✅ Link to post
-    await Post.findByIdAndUpdate(postId, {
-      $push: { comments: newComment._id },
-    });
+    await Post.findByIdAndUpdate(postId, { $push: { comments: newComment._id } });
+    await newComment.populate("author", "name");
 
-    req.flash('success_msg', 'Comment added successfully!');
-    res.redirect(`/posts/${postId}`);
+    res.json({
+      success: true,
+      comment: {
+        _id: newComment._id,
+        content: newComment.content,
+        author: newComment.author?.name || "You",
+        createdAt: newComment.createdAt,
+      },
+    });
   } catch (err) {
-    console.error('Error adding comment:', err);
-    req.flash('error_msg', 'Failed to add comment.');
-    res.redirect(`/posts/${req.params.postId}`);
+    console.error("Error adding comment:", err);
+    res.status(500).json({ success: false, message: "Failed to add comment" });
+  }
+};
+
+/* -------------------------------------------------------------------------- */
+/* 💬 DELETE COMMENT via AJAX                                                 */
+/* -------------------------------------------------------------------------- */
+exports.deleteCommentAjax = async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+    const comment = await Comment.findById(commentId);
+    if (!comment) return res.status(404).json({ success: false, message: "Comment not found" });
+
+    const userId = req.session.user?._id.toString();
+    const isAuthor = comment.author.toString() === userId;
+    const isAdmin = req.session.user?.role === "admin";
+
+    if (!isAuthor && !isAdmin)
+      return res.status(403).json({ success: false, message: "Not allowed to delete this comment" });
+
+    await Comment.findByIdAndDelete(commentId);
+    await Post.findByIdAndUpdate(postId, { $pull: { comments: commentId } });
+
+    res.json({ success: true, message: "Comment deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting comment:", err);
+    res.status(500).json({ success: false, message: "Failed to delete comment" });
   }
 };
