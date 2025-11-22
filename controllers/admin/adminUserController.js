@@ -28,7 +28,7 @@ exports.getUserDetails = async (req, res) => {
   }
 };
 
-// ✏️ Get edit user form
+// ✏️ Get edit user form 
 exports.getEditUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);

@@ -136,112 +136,189 @@ main.container {
 
 <%- include('../../partials/footer') %>
 
+
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
+  const commentList = document.querySelector(".comment-list");
+  const commentBtn = document.querySelector(".comment-btn");
+  const commentInput = document.querySelector(".comment-input");
+  const commentCountEl = document.getElementById("commentCount");
+  const likeBtn = document.getElementById("likeBtn");
+  const likeCountEl = document.getElementById("likeCount");
 
-  // 💬 AJAX Add Comment
-  document.querySelectorAll('.comment-btn').forEach(btn => {
-    btn.addEventListener('click', async e => {
-      const section = e.target.closest('.comment-section');
-      const input = section.querySelector('.comment-input');
-      const content = input.value.trim();
-      const postId = e.target.dataset.postid;
+  const postId = commentBtn?.dataset.postid || likeBtn?.dataset.postid;
 
-      if (!content) return alert("Please write a comment first!");
+  console.log("Debug: postId = ", postId);
+
+  if (!postId) {
+    console.warn("postId missing on buttons/data attributes.");
+  }
+
+  // --- Like button handler (delegated via the likeBtn directly) ---
+  if (likeBtn && likeCountEl) {
+    likeBtn.addEventListener("click", async (event) => {
+      event.preventDefault();
+      console.log("Like button clicked");
+
+      const currentLikes = parseInt(likeCountEl.textContent, 10) || 0;
+      let liked = likeBtn.classList.contains("btn-success");
+      console.log("Currently liked? ", liked, " currentLikes = ", currentLikes);
+
+      // Optimistic UI update
+      const newLikes = liked ? currentLikes - 1 : currentLikes + 1;
+      likeCountEl.textContent = Math.max(0, newLikes);
+      likeBtn.classList.toggle("btn-success", !liked);
+      likeBtn.classList.toggle("btn-outline-primary", liked);
+      likeBtn.textContent = !liked ? `❤️ Liked (${Math.max(0,newLikes)})` : `👍 Like (${Math.max(0,newLikes)})`;
 
       try {
-        const response = await fetch(`/posts/${postId}/comments`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const response = await fetch(`/posts/${encodeURIComponent(postId)}/like`, {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          }
+        });
+        const data = await response.json();
+        console.log("Like response:", response.status, data);
+
+        if (response.ok && data.success) {
+          likeCountEl.textContent = data.likesCount;
+          liked = data.liked;
+          likeBtn.textContent = liked ? `❤️ Liked (${data.likesCount})` : `👍 Like (${data.likesCount})`;
+        } else {
+          console.warn("Like toggle failed:", data.message || response.statusText);
+          // rollback
+          likeCountEl.textContent = currentLikes;
+          likeBtn.classList.toggle("btn-success", liked);
+          likeBtn.classList.toggle("btn-outline-primary", !liked);
+          likeBtn.textContent = liked ? `❤️ Liked (${currentLikes})` : `👍 Like (${currentLikes})`;
+        }
+      } catch (err) {
+        console.error("Error liking post:", err);
+        alert("Something went wrong liking the post.");
+        // rollback
+        likeCountEl.textContent = currentLikes;
+        likeBtn.classList.toggle("btn-success", liked);
+        likeBtn.classList.toggle("btn-outline-primary", !liked);
+        likeBtn.textContent = liked ? `❤️ Liked (${currentLikes})` : `👍 Like (${currentLikes})`;
+      }
+    });
+  } else {
+    console.warn("Like button or like count element not found.");
+  }
+
+  // --- Add comment handler ---
+  if (commentBtn && commentInput && commentList && commentCountEl) {
+    commentBtn.addEventListener("click", async (event) => {
+      event.preventDefault();
+      console.log("Comment button clicked");
+
+      const content = commentInput.value.trim();
+      if (!content) {
+        alert("Please write a comment before submitting.");
+        return;
+      }
+
+      commentBtn.disabled = true;
+
+      try {
+        const response = await fetch(`/posts/${encodeURIComponent(postId)}/comments`, {
+          method: "POST",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({ content })
         });
-
-        if (response.status === 401) return window.location.href = "/login";
-
         const data = await response.json();
-        if (data.success) {
-          const list = document.querySelector('.comment-list');
-          const newComment = document.createElement('div');
-          newComment.classList.add('comment-item');
-          newComment.dataset.commentid = data.comment._id;
-          newComment.innerHTML = `
-            <p><strong>${data.comment.author?.name || 'You'}</strong></p>
-            <p>${data.comment.content}</p>
-            <small class="text-light">${new Date(data.comment.createdAt).toLocaleString()}</small>
+        console.log("Add comment response:", response.status, data);
+
+        if (response.ok && data.success && data.comment) {
+          const canDelete = true; // assuming current user just posted -> author
+          const deleteBtnHtml = canDelete
+            ? `<button class="comment-delete btn btn-sm btn-danger mt-1">🗑️ Delete</button>`
+            : "";
+
+          const newCommentHtml = `
+            <div class="comment-item" data-commentid="${data.comment._id}">
+              <p><strong>${data.comment.author}</strong></p>
+              <p>${data.comment.content}</p>
+              <small class="text-light">${new Date(data.comment.createdAt).toLocaleString()}</small>
+              ${deleteBtnHtml}
+            </div>
           `;
-          list.appendChild(newComment);
+          commentList.insertAdjacentHTML("afterbegin", newCommentHtml);
 
-          input.value = '';
-          const count = document.getElementById('commentCount');
-          count.textContent = parseInt(count.textContent) + 1;
+          commentInput.value = "";
+          const prevCount = parseInt(commentCountEl.textContent, 10) || 0;
+          commentCountEl.textContent = prevCount + 1;
         } else {
-          alert(data.message || "Failed to post comment.");
+          console.warn("Failed to add comment:", data.message || response.statusText);
+          alert("Could not add comment: " + (data.message || `Status ${response.status}`));
         }
       } catch (err) {
-        console.error("Comment error:", err);
-        alert("Something went wrong while posting comment.");
+        console.error("Error during comment submission:", err);
+        alert("Something went wrong adding your comment. See console for details.");
+      } finally {
+        commentBtn.disabled = false;
       }
     });
-  });
+  } else {
+    console.warn("One or more comment UI elements not found (button, input, list or count).");
+  }
 
-  // 💬 AJAX Delete Comment
-  document.querySelector('.comment-list')?.addEventListener('click', async e => {
-    if (e.target.classList.contains('comment-delete')) {
-      const commentDiv = e.target.closest('.comment-item');
-      const commentId = commentDiv.dataset.commentid;
-      const postId = "<%= post._id %>";
-
-      if (!confirm("Are you sure you want to delete this comment?")) return;
-
-      try {
-        const res = await fetch(`/posts/${postId}/comments/${commentId}`, {
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' }
-        });
-
-        const data = await res.json();
-
-        if (res.ok && data.success) {
-          commentDiv.remove();
-          const count = document.getElementById('commentCount');
-          count.textContent = parseInt(count.textContent) - 1;
-        } else {
-          alert(data.message || "Failed to delete comment.");
-        }
-      } catch (err) {
-        console.error("Delete comment error:", err);
-        alert("Something went wrong while deleting comment.");
+  // --- Delete comment handler (delegated) ---
+  if (commentList) {
+    commentList.addEventListener("click", async (event) => {
+      const target = event.target;
+      if (!target.matches(".comment-delete")) {
+        return;
       }
-    }
-  });
+      console.log("Comment delete button clicked", target);
+      event.preventDefault();
 
-  // ❤️ AJAX Like Button
-  const likeBtn = document.getElementById("likeBtn");
-  if (likeBtn) {
-    likeBtn.addEventListener("click", async () => {
-      const postId = likeBtn.dataset.postid;
+      const commentItem = target.closest(".comment-item");
+      const commentId = commentItem?.dataset.commentid;
+      if (!commentId) {
+        console.warn("commentId missing from comment item for deletion.");
+        return;
+      }
+
+      const confirmed = confirm("Are you sure you want to delete this comment?");
+      if (!confirmed) {
+        return;
+      }
+
+      target.disabled = true;
+
       try {
-        const res = await fetch(`/posts/${postId}/like`, { method: "POST" });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          const likeCount = document.getElementById("likeCount");
-          likeCount.textContent = data.likesCount;
-          if (data.liked) {
-            likeBtn.classList.add("btn-success");
-            likeBtn.classList.remove("btn-outline-primary");
-            likeBtn.textContent = `❤️ Liked (${data.likesCount})`;
-          } else {
-            likeBtn.classList.add("btn-outline-primary");
-            likeBtn.classList.remove("btn-success");
-            likeBtn.textContent = `👍 Like (${data.likesCount})`;
+        const response = await fetch(`/posts/${encodeURIComponent(postId)}/comments/${encodeURIComponent(commentId)}`, {
+          method: "DELETE",
+          headers: {
+            "Accept": "application/json"
           }
-        } else if (res.status === 401) {
-          window.location.href = "/login";
+        });
+        const data = await response.json();
+        console.log("Delete comment response:", response.status, data);
+
+        if (response.ok && data.success) {
+          commentItem.remove();
+          const prevCount = parseInt(commentCountEl.textContent, 10) || 0;
+          commentCountEl.textContent = Math.max(0, prevCount - 1);
+        } else {
+          console.warn("Failed to delete comment:", data.message || response.statusText);
+          alert("Could not delete comment: " + (data.message || `Status ${response.status}`));
+          target.disabled = false;
         }
       } catch (err) {
-        console.error("Like error:", err);
+        console.error("Error deleting comment:", err);
+        alert("Something went wrong deleting the comment. See console for details.");
+        target.disabled = false;
       }
     });
+  } else {
+    console.warn("Comment list container not found for delete event delegation.");
   }
 
 });

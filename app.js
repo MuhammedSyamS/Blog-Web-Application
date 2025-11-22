@@ -8,6 +8,9 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
+const Setting = require('./models/Setting');
+
+
 
 // ============================
 // ⚙️ Load environment variables
@@ -87,6 +90,19 @@ const safeImport = (routePath) => {
     return (req, res) => res.status(500).send('Route not found or invalid.');
   }
 };
+
+// Page Title//
+
+app.use(async (req, res, next) => {
+  try {
+    const settings = await Setting.findOne();
+    res.locals.siteTitle = settings ? settings.siteTitle : 'My Blog';
+  } catch {
+    res.locals.siteTitle = 'My Blog';
+  }
+  next();
+});
+
 
 // ✅ Debug flash test route
 app.get('/test-flash', (req, res) => {

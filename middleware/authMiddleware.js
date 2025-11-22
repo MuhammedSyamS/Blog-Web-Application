@@ -1,43 +1,107 @@
-const { generateToken, verifyToken } = require('../utils/jwt');
+const { createToken, verifyToken } = require('../utils/jwt');
 
-// ✅ Helper: Attach user from session to req.user (for consistency)
+// Helper: attach user from session or token to req.user
 function attachUser(req, res, next) {
+  // 1. Check for session user
   if (req.session && req.session.user) {
-    req.user = req.session.user; // 👈 this line ensures req.user is always available
+    req.user = req.session.user;
+    return next();
   }
+
+  // 2. If no session user, check for token
+  const token = req.cookies?.jwt || req.headers['authorization']?.split(' ')[1];
+  if (token) {
+    try {
+      const payload = verifyToken(token);
+      // Attach payload data to req.user
+      req.user = {
+        _id: payload.id,
+        email: payload.email,
+        role: payload.role
+      };
+      return next();
+    } catch (err) {
+      console.warn('Invalid token:', err);
+      // If token invalid, we clear cookie (optional)
+      res.clearCookie('jwt');
+    }
+  }
+
+  // If no session or token, just proceed (user might be guest)
   next();
 }
 
-// 🔒 Only logged-in users
+// Middleware: require user logged in (session or valid token)
 exports.isAuthenticated = (req, res, next) => {
-  if (req.session.user) {
-    req.user = req.session.user; // 👈 ensures req.user works for routes like /dashboard
+  if (req.session?.user) {
+    req.user = req.session.user;
     return next();
   }
+
+  const token = req.cookies?.jwt || req.headers['authorization']?.split(' ')[1];
+  if (token) {
+    try {
+      const payload = verifyToken(token);
+      req.user = {
+        _id: payload.id,
+        email: payload.email,
+        role: payload.role
+      };
+      return next();
+    } catch (err) {
+      console.warn('Token verification failed:', err);
+    }
+  }
+
   req.flash('error_msg', 'Please log in first.');
-  res.redirect('/login');
+  return res.redirect('/login');
 };
 
-// 🚫 Only guests (e.g., signup or login pages)
+// Middleware: only guests allowed (no session, no valid token)
 exports.isGuest = (req, res, next) => {
-  if (!req.session.user) {
-    return next();
+  if (!req.session?.user) {
+    const token = req.cookies?.jwt || req.headers['authorization']?.split(' ')[1];
+    if (!token) {
+      return next();
+    }
+    // If token exists and is valid, then user is logged in via token
+    try {
+      verifyToken(token);
+      // user has token → redirect away
+      return res.redirect('/home');
+    } catch {
+      // token invalid → treat as guest
+      return next();
+    }
   }
-  res.redirect('/home');
+  return res.redirect('/home');
 };
 
-// ✅ Used for routes that strictly need authentication
+// Middleware: strict authentication (session or valid token) for protected routes
 exports.ensureAuthenticated = (req, res, next) => {
-  if (req.session && req.session.user) {
-    req.user = req.session.user; // 👈 attach user safely
+  if (req.session?.user) {
+    req.user = req.session.user;
     return next();
   }
+
+  const token = req.cookies?.jwt || req.headers['authorization']?.split(' ')[1];
+  if (token) {
+    try {
+      const payload = verifyToken(token);
+      req.user = {
+        _id: payload.id,
+        email: payload.email,
+        role: payload.role
+      };
+      return next();
+    } catch (err) {
+      console.warn('Token verification failed:', err);
+    }
+  }
+
   req.flash('error_msg', 'Please log in to continue.');
-  res.redirect('/login');
+  return res.redirect('/login');
 };
 
-// 👇 Export attachUser if you ever want to use it globally in app.js
+// Export attachUser if you want to set it globally
 exports.attachUser = attachUser;
-
-
-

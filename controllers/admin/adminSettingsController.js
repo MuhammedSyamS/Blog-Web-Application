@@ -22,7 +22,7 @@ exports.updateSettings = async (req, res) => {
   try {
     const { siteTitle } = req.body;
     const allowRegistrations = req.body.allowRegistrations === 'on';
-
+  
     let settings = await Setting.findOne();
     if (!settings) {
       settings = new Setting();
