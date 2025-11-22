@@ -78,7 +78,7 @@ exports.getSignup = async (req, res) => {
   }
 };
 
-// 🧩 POST: Handle Signup
+// 🧩 POST: Handle Signup (NO auto-login)
 exports.postSignup = async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
 
@@ -105,22 +105,7 @@ exports.postSignup = async (req, res) => {
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
 
-    // ✅ Generate JWT token
-    const token = createToken({
-      id: newUser._id,
-      email: newUser.email,
-      role: newUser.role
-    });
-
-    req.session.user = {
-      _id: newUser._id,
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role
-    };
-
-    res.cookie('jwt', token, { httpOnly: true });
-
+    // IMPORTANT: Do NOT set session or cookie here — the user should log in manually.
     req.flash('success_msg', 'Account created successfully. Please log in.');
     return res.redirect('/login');
 

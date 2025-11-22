@@ -1,21 +1,18 @@
-
-
-
+/* ===============================
+   ✔ GENERAL BODY BACKGROUND
+=================================*/
 body {
   background-image: url("/img/StockCake-Mountain_reading_escape_1762572141.jpg");
-  background-size: cover;        /* Cover full screen */
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;  /* Optional parallax effect */
+  background-attachment: fixed;
   min-height: 100vh;
   margin: 0;
   padding: 0;
 }
 
-
-
-
-/* 🌄 Background Section */
+/* Background section (optional) */
 .background {
   background-image: url("/img/StockCake-Mountain_reading_escape_1762572141.jpg");
   background-size: cover;
@@ -27,19 +24,19 @@ body {
   padding-bottom: 4rem;
 }
 
-
-/* Make outline buttons visible on blurred or dark backgrounds */
+/* ===============================
+   ✔ POST CARD BUTTONS
+=================================*/
 .post-card .btn-outline-primary {
-  color: #fff !important;               /* white text */
-  border-color: #fff !important;        /* white border */
+  color: #fff !important;
+  border-color: #fff !important;
 }
 
 .post-card .btn-outline-primary:hover {
-  background-color: #fff !important;    /* white background on hover */
-  color: #0d6efd !important;            /* Bootstrap primary blue text */
+  background-color: #fff !important;
+  color: #0d6efd !important;
 }
 
-/* Optional: make the like button more visible too */
 .post-card .btn-outline-danger {
   color: #ffb3b3 !important;
   border-color: #ffb3b3 !important;
@@ -50,9 +47,121 @@ body {
   color: #b30000 !important;
 }
 
-
+/* ===============================
+   ✔ COMMENTS SECTION
+=================================*/
 #commentsSection {
   max-height: 300px;
   overflow-y: auto;
   scroll-behavior: smooth;
+}
+
+/* ===============================
+   ✔ FIXED NAVBAR TOGGLE PROBLEM
+=================================*/
+
+/* Ensure navbar is on top but DO NOT set position: relative */
+.custom-navbar {
+  z-index: 1050 !important;
+}
+
+/* Make sure toggler is clickable */
+.navbar-toggler {
+  z-index: 1060 !important;
+  pointer-events: auto !important;
+}
+/* Fix navbar collapse toggle on mobile */
+.collapse.navbar-collapse {
+  display: none; /* hidden by default */
+}
+
+.collapse.navbar-collapse.show {
+  display: block; /* shown when toggled */
+}
+
+
+/* Custom Navbar Buttons */
+.custom-btn-warning {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #FFD700, #FFC107);
+  color: #000;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.custom-btn-warning:hover {
+  opacity: 0.85;
+}
+
+.custom-btn-outline-light {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.custom-btn-outline-light:hover {
+  background: #fff;
+  color: #0d6efd;
+}
+
+.custom-btn-light {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.custom-btn-light:hover {
+  opacity: 0.85;
+}
+
+.custom-btn-logout {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #FFD700, #FFC107);
+  color: #000;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.custom-btn-logout:hover {
+  opacity: 0.85;
+}
+
+/* Ensure navbar-collapse works */
+.collapse.navbar-collapse {
+  display: none;
+}
+
+.collapse.navbar-collapse.show {
+  display: block;
+}
+
+/* Make login/signup horizontal on mobile */
+@media (max-width: 991px) {
+  #mainNav .navbar-nav {
+    flex-direction: row !important;  /* force horizontal */
+    flex-wrap: wrap;                /* allow wrapping if needed */
+    justify-content: center;        /* center buttons */
+    gap: 0.5rem;                    /* space between buttons */
+  }
+
+  #mainNav .nav-item {
+    margin: 0 !important;           /* remove default vertical margin */
+  }
 }
