@@ -11,6 +11,18 @@ router.post('/login', validateLogin, authController.postLogin);
 router.get('/signup', isGuest, authController.getSignup);
 router.post('/signup', validateSignup, authController.postSignup);
 
+// — VERIFY OTP
+router.get('/verify', isGuest, authController.getVerify);
+router.post('/verify', authController.postVerify);
+
+// — FORGOT PASSWORD
+router.get('/forgot', isGuest, authController.getForgot);
+router.post('/forgot', authController.postForgot);
+
+// — RESET PASSWORD
+router.get('/reset', isGuest, authController.getReset);
+router.post('/reset', authController.postReset);
+
 // 🚪 Logout
 router.get('/logout', authController.logout);
 

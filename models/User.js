@@ -1,4 +1,4 @@
-
+// models/User.js
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
@@ -7,11 +7,15 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: { type: String, enum: ['user', 'admin'], default: 'user' },
 
-  // ✅ Track liked posts
-  likedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }]
+  likedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+
+  // OTP fields
+  otp: { type: String },
+  otpExpires: { type: Date },
+  isVerified: { type: Boolean, default: false }
 }, 
 {
-  timestamps: true // ✅ correct place (schema options)
+  timestamps: true
 });
 
 module.exports = mongoose.model('User', UserSchema);

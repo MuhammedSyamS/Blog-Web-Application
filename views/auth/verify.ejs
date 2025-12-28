@@ -1,0 +1,51 @@
+<%- include('../partials/header', { title: 'Verify Account' }) %>
+
+<style>
+  body {
+    background: linear-gradient(rgba(20, 20, 20, 0.65), rgba(20, 20, 20, 0.75)),
+                url("/img/StockCake-Mountain_reading_escape_1762572141.jpg") center/cover no-repeat fixed;
+    font-family: 'Poppins', sans-serif; color: #fff; min-height: 100vh; margin: 0;
+    display: flex; flex-direction: column;
+  }
+  .login-page { flex: 1; display: flex; align-items: center; justify-content: center; padding: 60px 15px; }
+  .login-container { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 15px;
+    padding: 2.5rem; box-shadow: 0 8px 25px rgba(0,0,0,0.4); width:100%; max-width:420px;
+  }
+  .btn-primary {background-color:#ffc107;border:none;color:#222;font-weight:600;transition:0.3s;}
+  .btn-primary:hover{background:#ffca2c;transform:translateY(-2px);}
+  .alert{border-radius:10px;}
+  a{color:#ffd966;text-decoration:none;font-weight:500;}
+  a:hover{color:#fff3b0;}
+</style>
+
+<div class="login-page">
+  <div class="login-container">
+    <h2>Verify Your Account</h2>
+    <p class="text-center mb-3" style="color:#ddd;">Enter your email & OTP</p>
+    <hr>
+
+    <% if (success_msg && success_msg.length > 0) { %>
+      <div class="alert alert-success text-center"><%= success_msg[0] %></div>
+    <% } %>
+
+    <% if (error_msg && error_msg.length > 0) { %>
+      <div class="alert alert-danger text-center"><%= error_msg[0] %></div>
+    <% } %>
+
+    <form action="/verify" method="POST">
+      <div class="mb-3">
+        <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
+      </div>
+      <div class="mb-3">
+        <input type="text" class="form-control" name="otp" placeholder="Enter OTP" required>
+      </div>
+      <button class="btn btn-primary w-100 py-2">Verify</button>
+    </form>
+    
+    <p class="mt-3 text-center" style="color:#ccc;">
+      Already verified? <a href="/login">Login</a>
+    </p>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
