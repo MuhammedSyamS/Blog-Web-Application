@@ -111,19 +111,23 @@ app.get('/test-flash', (req, res) => {
   res.redirect('/login');
 });
 
-// Public routes
-app.use('/', safeImport('./routes/authRoutes'));
-app.use('/', safeImport('./routes/mainRoutes'));
-app.use('/user', safeImport('./routes/userRoutes'));
-app.use('/posts', safeImport('./routes/postRoutes'));
-app.use('/posts', safeImport('./routes/likeRoutes'));
-app.use('/', safeImport('./routes/commentRoutes'));
 
-// ✅ Admin routes
-app.use('/admin/users', safeImport('./routes/admin/adminUserRoutes'));
-app.use('/admin/posts', safeImport('./routes/admin/adminPostRoutes'));
-app.use('/admin/settings', safeImport('./routes/admin/adminSettingsRoutes'));
-app.use('/admin/dashboard', safeImport('./routes/admin/adminDashboardRoutes'));
+// Public routes
+app.use('/', require('./routes/authRoutes'));
+app.use('/', require('./routes/mainRoutes'));
+app.use('/user', require('./routes/userRoutes'));
+app.use('/posts', require('./routes/postRoutes'));
+app.use('/posts', require('./routes/likeRoutes'));
+app.use('/', require('./routes/commentRoutes'));
+
+// Admin routes
+
+app.use('/admin/users', require('./routes/admin/adminUserRoutes'));
+app.use('/admin/posts', require('./routes/admin/adminPostRoutes'));
+app.use('/admin/settings', require('./routes/admin/adminSettingsRoutes'));
+app.use('/admin/dashboard', require('./routes/admin/adminDashboardRoutes'));
+
+
 
 // ============================
 // 🏠 Default route

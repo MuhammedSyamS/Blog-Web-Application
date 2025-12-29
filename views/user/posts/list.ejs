@@ -1,6 +1,186 @@
 <%- include('../../partials/header', { title: 'All Posts' }) %>
 
-<link rel="stylesheet" href="/css/posts-list.css">
+<style>
+  /* ===================== GLOBAL THEME ===================== */
+:root {
+  --bg-main: linear-gradient(135deg, #0f172a, #1e293b);
+  --card-bg: rgba(255, 255, 255, 0.08);
+  --card-border: rgba(255,255,255,0.1);
+  --accent: #ffd600;
+  --accent-hover: #ffec7c;
+  --btn-primary-bg: #4f46e5;
+  --btn-primary-hover: #7c3aed;
+  --btn-danger-bg: #ef4444;
+  --btn-danger-hover: #f87171;
+  --text-light: #f8f8f8;
+  --text-muted: rgba(255,255,255,0.7);
+}
+
+/* ===================== BODY ===================== */
+body {
+  background: var(--bg-main);
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-light);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+/* ===================== PAGE TITLE ===================== */
+.page-title {
+  font-weight: 800;
+  font-size: 2rem;
+  background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+  -webkit-background-clip: text;
+  background-clip: padding;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  transition: filter 0.3s ease;
+}
+.page-title:hover {
+  filter: drop-shadow(0 0 10px var(--accent));
+}
+
+/* ===================== CREATE BUTTON ===================== */
+.btn-primary {
+  background: linear-gradient(135deg, var(--btn-primary-bg), var(--btn-primary-hover));
+  border: none;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(79,70,229,0.45);
+  transition: all 0.25s ease;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(124,58,237,0.5);
+}
+
+/* ===================== NO POSTS CARD ===================== */
+.no-posts {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  border-radius: 24px;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4), inset 0 0 0 1px var(--card-border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.no-posts:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 40px 80px rgba(255,214,0,0.2);
+}
+.no-posts h4 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.no-posts p {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+.empty-img {
+  width: 120px;
+  opacity: 0.85;
+  margin-bottom: 1.5rem;
+}
+
+/* ===================== TABLE ===================== */
+.table-responsive {
+  background: var(--card-bg);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35), inset 0 0 0 1px var(--card-border);
+}
+
+table.table {
+  color: var(--text-light);
+  margin-bottom: 0;
+}
+
+table thead {
+  background: rgba(255,255,255,0.06);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.8px;
+}
+
+table tbody tr {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: default;
+}
+
+table tbody tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(255,214,0,0.15);
+  background: rgba(255,255,255,0.05);
+}
+
+.post-title {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+.post-title:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+/* ===================== ACTION BUTTONS ===================== */
+.btn-outline-primary {
+  border: 2px solid var(--btn-primary-bg);
+  color: var(--btn-primary-bg);
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+.btn-outline-primary:hover {
+  background: var(--btn-primary-bg);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.btn-outline-danger {
+  border: 2px solid var(--btn-danger-bg);
+  color: var(--btn-danger-bg);
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+.btn-outline-danger:hover {
+  background: var(--btn-danger-bg);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.6rem;
+  }
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  table thead {
+    font-size: 0.75rem;
+  }
+  table tbody td {
+    font-size: 0.85rem;
+  }
+}
+@media (max-width: 480px) {
+  .posts-wrapper {
+    padding: 0 0.5rem;
+  }
+  .page-title {
+    font-size: 1.4rem;
+  }
+  table thead {
+    font-size: 0.7rem;
+  }
+  table tbody td {
+    font-size: 0.8rem;
+  }
+}
+
+</style>
 
 <div class="posts-wrapper container my-5">
   <div class="d-flex justify-content-between align-items-center mb-4">

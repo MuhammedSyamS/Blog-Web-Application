@@ -1,214 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title || 'View User' %></title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>View User · Admin</title>
 
-  <!-- ✅ Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<!-- Bootstrap & Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
-  <!-- ✅ Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- ✅ Custom Admin CSS -->
-  <link rel="stylesheet" href="/css/admin.css" />
+<style>
+:root {
+  --bg-main: #0b0f19;
+  --card-bg: rgba(255,255,255,0.06);
+  --border-soft: rgba(255,255,255,0.12);
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+  --accent: #6366f1;
+  --accent-soft: rgba(99,102,241,0.25);
+  --success: #22c55e;
+  --danger: #ef4444;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background:
+    radial-gradient(circle at top left, #1a1f36, transparent 45%),
+    radial-gradient(circle at bottom right, #0d1226, transparent 45%),
+    var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Glass Card */
+.user-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  border: 1px solid var(--border-soft);
+  border-radius: 24px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 25px 80px rgba(0,0,0,0.55);
+  padding: 2.5rem;
+  max-width: 800px;
+  margin: 2rem auto;
+  animation: fadeUp 0.6s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.page-title {
+  font-weight: 800;
+  font-size: 2rem;
+  background: linear-gradient(90deg,#ffffff,#a5b4fc);
+  -webkit-background-clip: text;
+  background-clip: padding;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+.subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Details */
+.detail-box {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.detail-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(99,102,241,0.3);
+}
+.detail-box i {
+  font-size: 1.2rem;
+}
+
+/* Buttons */
+.btn-gradient {
+  background: linear-gradient(135deg,#6366f1,#4f46e5);
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 0.65rem 1.8rem;
+  font-weight: 600;
+  box-shadow: 0 12px 30px rgba(99,102,241,0.4);
+  transition: all 0.3s ease;
+}
+.btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(99,102,241,0.55);
+}
+.btn-outline {
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  padding: 0.65rem 1.5rem;
+  background: transparent;
+  color: var(--text-main);
+}
+.btn-outline:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* Avatar */
+.avatar-circle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 70px;
+  margin: 0 auto;
+}
+
+/* Responsive */
+@media(max-width:768px){
+  .user-card {
+    padding: 2rem 1.5rem;
+  }
+  .detail-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .actions {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .btn-gradient, .btn-outline {
+    width: 100%;
+    text-align: center;
+  }
+}
+</style>
 </head>
 <body>
-  <!-- ✅ Admin Navbar -->
-  <%- include('../../partials/admin_nav') %>
 
-  <!-- ✅ Main Content -->
-  <main class="container py-5">
+<%- include('../../partials/admin_nav') %>
+
+<main class="container py-5">
+  <div class="user-card">
+
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <div>
-        <h2 class="fw-bold mb-1">
-          <i class="bi bi-person-circle text-primary"></i> User Details
-        </h2>
-        <p class="text-muted mb-0">View complete information about this user.</p>
-      </div>
-      <a href="/admin/users" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left-circle me-1"></i> Back to Users
-      </a>
+    <div>
+      <div class="page-title"><i class="bi bi-person-circle"></i> User Details</div>
+      <div class="subtitle">View complete information about this user</div>
     </div>
 
-    <!-- User Details Card -->
-    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-      <div class="card-body p-4">
-        <div class="row align-items-center">
-          <!-- Avatar -->
-          <div class="col-md-3 text-center mb-4 mb-md-0">
-            <div
-              class="bg-light border rounded-circle d-inline-flex align-items-center justify-content-center"
-              style="width: 130px; height: 130px;"
-            >
-              <i class="bi bi-person-fill text-primary" style="font-size: 70px;"></i>
-            </div>
-          </div>
-
-          <!-- Details -->
-          <div class="col-md-9">
-            <div class="mb-3">
-              <h4 class="fw-semibold text-dark mb-1">
-                <i class="bi bi-person me-2 text-primary"></i> <%= user.name %>
-              </h4>
-              <p class="text-muted mb-3">
-                <i class="bi bi-envelope me-2"></i> <%= user.email %>
-              </p>
-            </div>
-
-            <div class="row g-3">
-              <div class="col-sm-6">
-                <div class="p-3 bg-light rounded-3">
-                  <span class="text-muted small d-block">Role</span>
-                  <strong class="text-dark">
-                    <i
-                      class="bi <%= user.role === 'admin' ? 'bi-shield-lock-fill text-danger' : 'bi-person-badge text-primary' %> me-2"
-                    ></i>
-                    <%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %>
-                  </strong>
-                </div>
-              </div>
-
-              <div class="col-sm-6">
-                <div class="p-3 bg-light rounded-3">
-                  <span class="text-muted small d-block">Registered On</span>
-                  <strong class="text-dark">
-                    <i class="bi bi-calendar-event me-2 text-success"></i>
-                    <%= new Date(user.createdAt).toLocaleDateString() %>
-                  </strong>
-                </div>
-              </div>
-
-              <div class="col-sm-6">
-                <div class="p-3 bg-light rounded-3">
-                  <span class="text-muted small d-block">Account Status</span>
-                  <strong class="<%= user.isActive ? 'text-success' : 'text-danger' %>">
-                    <i
-                      class="bi <%= user.isActive ? 'bi-check-circle-fill' : 'bi-x-circle-fill' %> me-2"
-                    ></i>
-                    <%= user.isActive ? 'Active' : 'Deactivated' %>
-                  </strong>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <hr class="my-4" />
-
-        <!-- Action Buttons -->
-        <div class="text-end">
-          <a href="/admin/users/<%= user._id %>/edit" class="btn btn-warning px-4 me-2">
-            <i class="bi bi-pencil-square me-1"></i> Edit User
-          </a>
-
-          <% if (user.isActive) { %>
-            <button
-              class="btn btn-danger px-4 me-2"
-              data-bs-toggle="modal"
-              data-bs-target="#confirmDeactivateModal"
-            >
-              <i class="bi bi-person-x me-1"></i> Deactivate
-            </button>
-          <% } else { %>
-            <form
-              action="/admin/users/<%= user._id %>/reactivate?_method=PUT"
-              method="POST"
-              class="d-inline"
-            >
-              <button type="submit" class="btn btn-success px-4 me-2">
-                <i class="bi bi-person-check me-1"></i> Reactivate
-              </button>
-            </form>
-          <% } %>
-
-          <a href="/admin/users" class="btn btn-secondary px-4">
-            <i class="bi bi-arrow-left me-1"></i> Back to Users
-          </a>
-        </div>
-      </div>
+    <!-- Avatar -->
+    <div class="avatar-circle my-4">
+      <i class="bi bi-person-fill text-primary"></i>
     </div>
-  </main>
 
-  <!-- ✅ Deactivate Confirmation Modal -->
-  <div
-    class="modal fade"
-    id="confirmDeactivateModal"
-    tabindex="-1"
-    aria-labelledby="confirmDeactivateLabel"
-    aria-hidden="true"
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header border-0">
-          <h5 class="modal-title fw-bold text-danger" id="confirmDeactivateLabel">
-            <i class="bi bi-exclamation-triangle me-2"></i> Confirm Deactivation
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="modal-body">
-          Are you sure you want to deactivate <strong><%= user.name %></strong>?  
-          The user will no longer be able to log in.
-        </div>
-        <div class="modal-footer border-0">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            Cancel
-          </button>
-          <form
-            action="/admin/users/<%= user._id %>/deactivate?_method=PUT"
-            method="POST"
-            class="d-inline"
-          >
-            <button type="submit" class="btn btn-danger">
-              <i class="bi bi-person-x me-1"></i> Confirm Deactivate
-            </button>
-          </form>
-        </div>
-      </div>
+    <!-- User Info -->
+    <div class="detail-box">
+      <i class="bi bi-person"></i>
+      <div><strong>Name:</strong> <%= user.name %></div>
     </div>
+    <div class="detail-box">
+      <i class="bi bi-envelope"></i>
+      <div><strong>Email:</strong> <%= user.email %></div>
+    </div>
+    <div class="detail-box">
+      <i class="bi <%= user.role==='admin' ? 'bi-shield-lock-fill text-danger' : 'bi-person-badge text-primary' %>"></i>
+      <div><strong>Role:</strong> <%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %></div>
+    </div>
+    <div class="detail-box">
+      <i class="bi bi-calendar-event text-success"></i>
+      <div><strong>Registered On:</strong> <%= new Date(user.createdAt).toLocaleDateString() %></div>
+    </div>
+    <div class="detail-box">
+      <i class="bi <%= user.isActive ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' %>"></i>
+      <div><strong>Status:</strong> <%= user.isActive ? 'Active' : 'Deactivated' %></div>
+    </div>
+
+    <hr class="my-4">
+
+    <!-- Actions -->
+    <div class="d-flex actions justify-content-end gap-3">
+      <a href="/admin/users/<%= user._id %>/edit" class="btn btn-gradient"><i class="bi bi-pencil-square me-1"></i> Edit</a>
+
+      <% if(user.isActive){ %>
+        <form action="/admin/users/<%= user._id %>/deactivate?_method=PUT" method="POST">
+          <button type="submit" class="btn btn-gradient" style="background:#ef4444;"><i class="bi bi-person-x me-1"></i> Deactivate</button>
+        </form>
+      <% } else { %>
+        <form action="/admin/users/<%= user._id %>/reactivate?_method=PUT" method="POST">
+          <button type="submit" class="btn btn-gradient" style="background:#22c55e;"><i class="bi bi-person-check me-1"></i> Reactivate</button>
+        </form>
+      <% } %>
+
+      <a href="/admin/users" class="btn btn-outline"><i class="bi bi-arrow-left me-1"></i> Back</a>
+    </div>
+
   </div>
+</main>
 
-  <!-- ✅ Footer -->
-  <%- include('../../partials/footer') %>
-
-  <!-- ✅ Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- ✅ Inline Styles -->
-  <style>
-    body {
-      background-color: #f8f9fa;
-    }
-
-    .card {
-      transition: all 0.3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 0.8rem 1rem rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-warning {
-      background: linear-gradient(135deg, #ffc107, #e0a800);
-      border: none;
-    }
-
-    .btn-warning:hover {
-      background: linear-gradient(135deg, #e0a800, #c69500);
-    }
-
-    .btn-outline-secondary:hover {
-      background: #f8f9fa;
-      color: #333;
-    }
-  </style>
+<%- include('../../partials/footer') %>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

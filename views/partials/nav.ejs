@@ -1,9 +1,211 @@
+<style>
+
+/* ===============================
+   ✔ FIXED NAVBAR TOGGLE PROBLEM
+=================================*/
+
+
+.navbar-icon {
+  width: 27px;
+  height: 27px;
+  object-fit: contain;
+}
+
+
+/* Ensure navbar is on top but DO NOT set position: relative */
+.custom-navbar {
+  z-index: 1050 !important;
+}
+
+/* Make sure toggler is clickable */
+.navbar-toggler {
+  z-index: 1060 !important;
+  pointer-events: auto !important;
+}
+/* Fix navbar collapse toggle on mobile */
+.collapse.navbar-collapse {
+  display: none; /* hidden by default */
+}
+
+.collapse.navbar-collapse.show {
+  display: block; /* shown when toggled */
+}
+
+
+/* Custom Navbar Buttons */
+.custom-btn-warning {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #FFD700, #FFC107);
+  color: #000;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.custom-btn-warning:hover {
+  opacity: 0.85;
+}
+
+.custom-btn-outline-light {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.custom-btn-outline-light:hover {
+  background: #fff;
+  color: #0d6efd;
+}
+
+.custom-btn-light {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.custom-btn-light:hover {
+  opacity: 0.85;
+}
+
+.custom-btn-logout {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #FFD700, #FFC107);
+  color: #000;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.custom-btn-logout:hover {
+  opacity: 0.85;
+}
+
+/* Ensure navbar-collapse works */
+.collapse.navbar-collapse {
+  display: none;
+}
+
+.collapse.navbar-collapse.show {
+  display: block;
+}
+
+/* Make login/signup horizontal on mobile */
+@media (max-width: 991px) {
+  #mainNav .navbar-nav {
+    flex-direction: row !important;  /* force horizontal */
+    flex-wrap: wrap;                /* allow wrapping if needed */
+    justify-content: center;        /* center buttons */
+    gap: 0.5rem;                    /* space between buttons */
+  }
+
+  #mainNav .nav-item {
+    margin: 0 !important;           /* remove default vertical margin */
+  }
+}
+
+/* ===============================
+   ✔ MOBILE MENU ARRANGEMENT FIX
+   (NO icon / color / style change)
+=================================*/
+@media (max-width: 991px) {
+
+  /* Mobile dropdown container */
+  #mainNav {
+    margin-top: 0.75rem;
+  }
+
+  /* Stack items properly */
+  #mainNav .navbar-nav {
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100%;
+    gap: 0.6rem;
+    padding: 0.75rem 0;
+  }
+
+  /* Each item takes full width */
+  #mainNav .nav-item {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Buttons & links align properly */
+  #mainNav .nav-link {
+    width: auto;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Greeting text spacing */
+  #mainNav .nav-item span {
+    text-align: center;
+    display: block;
+  }
+}
+/* ===============================
+   ✔ MOBILE MENU HORIZONTAL FIX
+   (username separate)
+=================================*/
+@media (max-width: 991px) {
+
+  /* Navbar collapse spacing */
+  #mainNav {
+    margin-top: 0.75rem;
+  }
+
+  /* Username stays on its own row */
+  #mainNav .nav-item:first-child {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Make remaining items horizontal */
+  #mainNav .navbar-nav {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  /* Prevent full-width stacking */
+  #mainNav .nav-item:not(:first-child) {
+    width: auto;
+  }
+
+  /* Center buttons nicely */
+  #mainNav .nav-link {
+    text-align: center;
+    white-space: nowrap;
+  }
+}
+
+
+</style>
+
+
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm custom-navbar">
   <div class="container">
 
     <!-- 🌐 Brand -->
     <a class="navbar-brand fw-bold d-flex align-items-center brand-logo" href="/">
-      <i class="bi bi-journal-text me-2 text-warning"></i>
+      <i><img src="/img/Blogify-favicon.png"alt="Blogify" class="navbar-icon me-2"/> </i>
       <%= siteTitle %>
     </a>
 
@@ -20,7 +222,7 @@
         <% if (user) { %>
 
           <li class="nav-item me-3">
-            <span class="text-light small">👋 Hello, <strong><%= user.name %></strong></span>
+            <span class="text-light small ">Hello, <strong><%= user.name %></strong></span>
           </li>
 
           <% if (user.role === 'admin') { %>

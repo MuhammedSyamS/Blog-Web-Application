@@ -12,18 +12,40 @@
 
     <!-- Navbar items -->
     <div class="collapse navbar-collapse" id="adminNav">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 flex-row flex-wrap">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
         <li class="nav-item me-2">
-          <a class="nav-link text-light" href="/admin/users">Users</a>
+          <a class="nav-link text-light" href="/">Home</a>
         </li>
-        <li class="nav-item me-2">
-          <a class="nav-link text-light" href="/admin/posts">Posts</a>
+
+        <!-- Users Dropdown -->
+        <li class="nav-item dropdown me-2">
+          <a class="nav-link dropdown-toggle text-light" href="#" id="usersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Users
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="usersDropdown">
+            <li><a class="dropdown-item text-light" href="/admin/users">All Users</a></li>
+            <li><a class="dropdown-item text-light" href="/admin/users/create">Add User</a></li>
+          </ul>
         </li>
+
+        <!-- Posts Dropdown -->
+        <li class="nav-item dropdown me-2">
+          <a class="nav-link dropdown-toggle text-light" href="#" id="postsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Posts
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="postsDropdown">
+            <li><a class="dropdown-item text-light" href="/admin/posts">All Posts</a></li>
+            <li><a class="dropdown-item text-light" href="/admin/posts/pending">Pending Posts</a></li>
+          </ul>
+        </li>
+
         <li class="nav-item me-2">
           <a class="nav-link text-light" href="/admin/settings">Settings</a>
         </li>
       </ul>
 
+      <!-- Right side -->
       <ul class="navbar-nav flex-row flex-wrap">
         <li class="nav-item me-2">
           <a class="nav-link text-light" href="/logout">Logout</a>
@@ -33,3 +55,25 @@
 
   </div>
 </nav>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+  .navbar {
+    background: linear-gradient(135deg, #0b0f19, #131c31);
+    border-radius: 12px;
+  }
+  .nav-link {
+    transition: all 0.2s ease;
+  }
+  .nav-link:hover, .dropdown-item:hover {
+    color: #7c7cff !important;
+    background: rgba(124,124,255,0.1);
+    border-radius: 6px;
+  }
+  .dropdown-menu {
+    background: #131c31;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+  }
+</style>

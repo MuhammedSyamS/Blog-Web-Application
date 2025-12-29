@@ -21,7 +21,7 @@ transporter.verify((err, success) => {
 });
 
 exports.sendOTP = async (to, otp, subject) => {
-  console.log(`📩 Sending OTP ${otp} to ${to}`);
+ 
   try {
     const info = await transporter.sendMail({
       from: `"Blogify" <${process.env.EMAIL_USER}>`,

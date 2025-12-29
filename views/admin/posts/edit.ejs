@@ -3,209 +3,237 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title || 'Edit Post' %></title>
+  <title>Edit Post</title>
 
-  <!-- Bootstrap CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
-  <!-- Bootstrap Icons -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-    rel="stylesheet"
-  />
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: rgba(255,255,255,0.06);
+      --border-soft: rgba(255,255,255,0.12);
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --accent: #6366f1;
+      --accent-soft: rgba(99,102,241,0.25);
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      background-color: #f8f9fa;
-      font-family: "Inter", "Segoe UI", sans-serif;
+      font-family: 'Inter', sans-serif;
+      background:
+        radial-gradient(circle at top left, #1a1f36, transparent 45%),
+        radial-gradient(circle at bottom right, #0d1226, transparent 45%),
+        var(--bg-main);
+      color: var(--text-main);
     }
 
-    .card {
-      border: none;
-      border-radius: 1rem;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+    .page-header h2 {
+      font-weight: 800;
+      background: linear-gradient(90deg, #ffffff, #a5b4fc);
+      -webkit-background-clip: text;
+      background-clip: padding;
+      -webkit-text-fill-color: transparent;
     }
 
-    h2 {
-      font-weight: 700;
-      color: #0d6efd;
+    .page-header p {
+      color: var(--text-muted);
+    }
+
+    .glass-card {
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.08),
+        rgba(255,255,255,0.02)
+      );
+      border: 1px solid var(--border-soft);
+      backdrop-filter: blur(16px);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+      animation: fadeUp 0.6s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .form-label {
-      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
     }
 
-    .form-control, .form-select {
-      border-radius: 0.6rem;
-      border: 1px solid #ced4da;
-      transition: all 0.2s;
+    .form-control,
+    .form-select {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+      border-radius: 14px;
+      padding: 0.8rem 1rem;
     }
 
-    .form-control:focus, .form-select:focus {
-      border-color: #0d6efd;
-      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    .form-control:focus,
+    .form-select:focus {
+      background: rgba(255,255,255,0.08);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 0.2rem var(--accent-soft);
+      color: var(--text-main);
     }
 
-    .img-preview {
-      transition: transform 0.2s ease;
+    textarea { resize: vertical; min-height: 120px; }
+
+    .image-item img,
+    .preview-img {
+      width: 100%;
+      max-width: 140px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      display: block;
     }
 
-    .img-preview:hover {
-      transform: scale(1.05);
-    }
+    .image-item { text-align: center; }
 
     .btn-primary {
-      background: linear-gradient(90deg, #0d6efd, #0b5ed7);
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
       border: none;
+      border-radius: 999px;
+      padding: 0.7rem 1.8rem;
+      font-weight: 600;
+      box-shadow: 0 15px 35px rgba(99,102,241,0.5);
     }
 
-    .btn-outline-secondary {
-      border-radius: 50px;
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 45px rgba(99,102,241,0.65);
     }
 
-    .text-muted {
-      font-size: 0.9rem;
+    .btn-outline {
+      border: 1px solid var(--border-soft);
+      color: var(--text-main);
+      border-radius: 999px;
+      padding: 0.6rem 1.2rem;
     }
+
+    .btn-outline:hover { background: rgba(255,255,255,0.08); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .glass-card { padding: 1.5rem; }
+      .image-item { flex: 0 0 30%; }
+      #preview { flex-wrap: wrap; }
+    }
+
+    @media (max-width: 576px) {
+      .image-item { flex: 0 0 45%; }
+      textarea { min-height: 100px; }
+      .btn-primary { width: 100%; text-align: center; }
+    }
+
+    .image-container { display: flex; flex-wrap: wrap; gap: 1rem; }
   </style>
 </head>
 
 <body>
-  <!-- Admin Navbar -->
-  <%- include('../../partials/admin_nav') %>
 
-  <div class="container py-5">
-    <!-- Header Section -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <div>
-        <h2><i class="bi bi-pencil-square me-2"></i>Edit Post</h2>
-        <p class="text-muted">Refine your content and update it instantly.</p>
-      </div>
-      <a href="/admin/posts" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left-circle me-1"></i> Back to Posts
-      </a>
+<%- include('../../partials/admin_nav') %>
+
+<div class="container py-5">
+
+  <div class="d-flex justify-content-between align-items-center mb-4 page-header">
+    <div>
+      <h2><i class="bi bi-pencil-square"></i> Edit Post</h2>
+      <p>Refine content, manage images, and control visibility.</p>
     </div>
+    <a href="/admin/posts" class="btn btn-outline">
+      <i class="bi bi-arrow-left"></i> Back
+    </a>
+  </div>
 
-    <!-- Edit Post Card -->
-    <div class="card p-4">
-      <form
-        action="/admin/posts/<%= post._id %>?_method=PUT"
-        method="POST"
-        enctype="multipart/form-data"
-      >
-        <!-- Title -->
-        <div class="mb-4">
-          <label for="title" class="form-label">Post Title</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            class="form-control form-control-lg"
-            placeholder="Enter your post title"
-            value="<%= post.title %>"
-            required
-          />
-        </div>
+  <div class="glass-card">
+    <form action="/admin/posts/<%= post._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
 
-        <!-- Existing Images -->
-        <% if (post.images && post.images.length > 0) { %>
+      <!-- Title -->
+      <div class="mb-4">
+        <label class="form-label">Post Title</label>
+        <input type="text" name="title" class="form-control form-control-lg" value="<%= post.title %>" required>
+      </div>
+
+      <!-- Existing Images -->
+      <% if (post.images && post.images.length > 0) { %>
         <div class="mb-4">
           <label class="form-label">Existing Images</label>
-          <div class="d-flex flex-wrap gap-3">
-            <% post.images.forEach(function(img) { %>
-            <div class="border rounded text-center p-2 shadow-sm" style="width: 130px;">
-              <img
-                src="/uploads/<%= img %>"
-                class="img-fluid rounded img-preview mb-2"
-                alt="Existing image"
-                style="height: 90px; object-fit: cover; width: 100%;"
-              />
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  name="removeImages[]"
-                  value="<%= img %>"
-                  id="remove_<%= img %>"
-                />
-                <label for="remove_<%= img %>" class="form-check-label small text-muted">
-                  Remove
-                </label>
+          <div class="image-container mt-2">
+            <% post.images.forEach((img, index) => { %>
+              <div class="image-item">
+                <img src="<%= img %>" alt="Image <%= index+1 %>">
+                <div class="form-check mt-1">
+                  <input class="form-check-input" type="checkbox" name="removeImages" value="<%= img.replace('/uploads/', '') %>">
+                  <label class="form-check-label text-muted small">Remove</label>
+                </div>
               </div>
-            </div>
             <% }) %>
           </div>
         </div>
-        <% } %>
+      <% } %>
 
-        <!-- Upload New Images -->
-        <div class="mb-4">
-          <label for="newImages" class="form-label">
-            <i class="bi bi-upload me-1"></i> Upload New Images
-          </label>
-          <input
-            type="file"
-            id="newImages"
-            name="newImages"
-            class="form-control"
-            multiple
-            accept="image/*"
-          />
-          <small class="text-muted">
-            You can upload multiple images at once (JPG, PNG, GIF).
-          </small>
-        </div>
+      <!-- Upload -->
+      <div class="mb-4">
+        <label class="form-label">Upload New Images</label>
+        <input type="file" name="newImages" class="form-control" multiple onchange="preview(event)">
+        <div id="preview" class="image-container mt-3"></div>
+      </div>
 
-        <!-- Content -->
-        <div class="mb-4">
-          <label for="content" class="form-label">
-            <i class="bi bi-text-paragraph me-1"></i> Content
-          </label>
-          <textarea
-            id="content"
-            name="content"
-            class="form-control"
-            rows="8"
-            placeholder="Write something engaging..."
-            required
-          ><%= post.content %></textarea>
-        </div>
+      <!-- Content -->
+      <div class="mb-4">
+        <label class="form-label">Post Content</label>
+        <textarea name="content" rows="7" class="form-control" required><%= post.content %></textarea>
+      </div>
 
-        <!-- Status -->
-        <div class="mb-4">
-          <label for="status" class="form-label">
-            <i class="bi bi-flag me-1"></i> Status
-          </label>
-          <select id="status" name="status" class="form-select form-select-lg">
-            <option value="published" <%= post.status === 'published' ? 'selected' : '' %>>
-              ✅ Published
-            </option>
-            <option value="draft" <%= post.status === 'draft' ? 'selected' : '' %>>
-              📝 Draft
-            </option>
-            <option value="pending" <%= post.status === 'pending' ? 'selected' : '' %>>
-              ⏳ Pending
-            </option>
-          </select>
-        </div>
+      <!-- Status -->
+      <div class="mb-4">
+        <label class="form-label">Publication Status</label>
+        <select name="status" class="form-select">
+          <option value="published" <%= post.status === 'published' ? 'selected' : '' %>>Published</option>
+          <option value="draft" <%= post.status === 'draft' ? 'selected' : '' %>>Draft</option>
+          <option value="Pending" <%= post.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+        </select>
+      </div>
 
-        <!-- Submit -->
-        <div class="text-end">
-          <button
-            type="submit"
-            class="btn btn-primary btn-lg px-4 rounded-pill shadow-sm"
-          >
-            <i class="bi bi-save me-2"></i> Update Post
-          </button>
-        </div>
-      </form>
-    </div>
+      <div class="text-end">
+        <button class="btn btn-primary btn-lg mt-2">
+          <i class="bi bi-save"></i> Update Post
+        </button>
+      </div>
+
+    </form>
   </div>
+</div>
 
-  <%- include('../../partials/footer') %>
+<script>
+function preview(e) {
+  const box = document.getElementById('preview');
+  box.innerHTML = '';
+  [...e.target.files].forEach(f => {
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(f);
+    img.className = 'preview-img';
+    box.appendChild(img);
+  });
+}
+</script>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

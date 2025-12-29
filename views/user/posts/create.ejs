@@ -1,160 +1,202 @@
 <%- include('../../partials/header', { title: 'Create New Post' }) %>
 
-<link rel="stylesheet" href="/css/style.css">
-
 <style>
-  /* 🌫️ Frosted Glass Container */
-  .create-post-wrapper {
-    min-height: 100vh;
-    background: url('/images/bg.jpg') center/cover no-repeat fixed;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-  }
+/* ===================== GLOBAL THEME ===================== */
+:root {
+  --bg-gradient: linear-gradient(135deg, #0f172a, #1e293b);
+  --glass-bg: rgba(255,255,255,0.08);
+  --glass-border: rgba(255,255,255,0.15);
+  --accent: #ffd600;
+  --accent-hover: #fff176;
+  --btn-primary: #4f46e5;
+  --btn-primary-hover: #7c3aed;
+  --text-light: #f8f8f8;
+  --text-muted: rgba(255,255,255,0.7);
+}
 
+/* ===================== BODY ===================== */
+body {
+  background: var(--bg-gradient);
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-light);
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+
+/* ===================== WRAPPER ===================== */
+.create-post-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 15px;
+}
+
+/* ===================== GLASS FORM ===================== */
+.create-post-container {
+  backdrop-filter: blur(18px);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 40px 35px;
+  max-width: 700px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35), inset 0 0 0 1px var(--glass-border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.create-post-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 30px 60px rgba(79,70,229,0.3), inset 0 0 0 1px var(--glass-border);
+}
+
+/* ===================== PAGE TITLE ===================== */
+.create-post-container .page-title {
+  font-weight: 800;
+  text-align: center;
+  font-size: 2rem;
+  background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+  -webkit-background-clip: text;
+  background-clip: padding;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+  transition: filter 0.3s ease;
+}
+.create-post-container .page-title:hover {
+  filter: drop-shadow(0 0 12px var(--accent));
+}
+
+.create-post-container .text-muted {
+  text-align: center;
+  margin-bottom: 25px;
+  color: var(--text-muted) !important;
+}
+
+/* ===================== FORM ELEMENTS ===================== */
+.create-post-container .form-label {
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+.create-post-container .form-control {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: #fff;
+  transition: all 0.25s ease;
+}
+.create-post-container .form-control::placeholder {
+  color: var(--text-muted);
+}
+.create-post-container .form-control:focus {
+  background: rgba(255,255,255,0.25);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(255,214,0,0.3);
+}
+
+/* ===================== IMAGE PREVIEW ===================== */
+.image-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 10px;
+}
+.preview-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid rgba(255,255,255,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.preview-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(255,214,0,0.4);
+}
+
+/* ===================== SUBMIT BUTTON ===================== */
+.create-post-container .btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, var(--btn-primary), var(--btn-primary-hover));
+  border: none;
+  font-weight: 600;
+  padding: 0.7rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+.create-post-container .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(124,58,237,0.4);
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 768px) {
   .create-post-container {
-    backdrop-filter: blur(12px);
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    padding: 40px 35px;
-    width: 100%;
-    max-width: 700px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-    color: #fff;
+    padding: 30px 20px;
   }
-
-  /* 🧾 Title Styling */
   .create-post-container .page-title {
-    font-weight: 700;
-    text-align: center;
-    color: #fff;
-    margin-bottom: 10px;
+    font-size: 1.6rem;
   }
-
-  .create-post-container .text-muted {
-    color: white !important;
-    text-align: center;
-  }
-
-  /* 📝 Form Elements */
-  .create-post-container .form-label {
-    color: #fff;
-    font-weight: 600;
-  }
-
-  .create-post-container .form-control {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: #fff;
-  }
-
-  .create-post-container .form-control::placeholder {
-    color:white;
-  }
-
-  .create-post-container .form-control:focus {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: #0d6efd;
-    box-shadow: 0 0 8px rgba(13, 110, 253, 0.4);
-  }
-
-  /* 🖼️ Image Preview */
-  .image-preview {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
   .preview-img {
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    transition: transform 0.3s ease;
+    width: 90px;
+    height: 90px;
   }
-
-  .preview-img:hover {
-    transform: scale(1.05);
+}
+@media (max-width: 480px) {
+  .create-post-container {
+    padding: 25px 15px;
   }
-
-  /* 🚀 Submit Button */
-  .create-post-container .btn-primary {
-    background-color: #0d6efd;
-    border: none;
-    border-radius: 10px;
-    font-weight: 600;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+  .create-post-container .page-title {
+    font-size: 1.4rem;
   }
-
-  .create-post-container .btn-primary:hover {
-    background-color: #0b5ed7;
-    transform: translateY(-2px);
+  .preview-img {
+    width: 70px;
+    height: 70px;
   }
+}
 </style>
 
 <div class="create-post-wrapper">
   <div class="create-post-container">
     <h2 class="page-title">📝 Create New Post</h2>
-    <p class="text-muted mb-4">
-      Share your thoughts with the world. Add a catchy title, upload one or more images, and write your story!
+    <p class="text-muted">
+      Share your thoughts with the world. Add a catchy title, upload images, and write your story!
     </p>
 
-    <!-- ✅ Multiple Image Upload Form -->
     <form action="/posts/new" method="POST" enctype="multipart/form-data" id="createPostForm">
-
-      <!-- Post Title -->
       <div class="mb-3">
         <label for="title" class="form-label">Post Title</label>
         <input type="text" id="title" name="title" class="form-control" placeholder="Enter your post title" required>
       </div>
 
-      <!-- Upload Images -->
       <div class="mb-3">
         <label for="images" class="form-label">Upload Images</label>
-        <input 
-          type="file" 
-          id="images" 
-          name="images" 
-          class="form-control" 
-          accept="image/*" 
-          multiple 
-          onchange="previewImages(event)"
-        >
-        <div class="image-preview mt-3" id="imagePreview"></div>
+        <input type="file" id="images" name="images" class="form-control" accept="image/*" multiple onchange="previewImages(event)">
+        <div class="image-preview" id="imagePreview"></div>
       </div>
 
-      <!-- Post Content -->
       <div class="mb-3">
         <label for="content" class="form-label">Post Content</label>
         <textarea id="content" name="content" class="form-control" rows="8" placeholder="Write something amazing..." required></textarea>
       </div>
 
-      <!-- Submit Button -->
-      <button type="submit" class="btn btn-primary w-100">Publish Post</button>
+      <button type="submit" class="btn btn-primary">Publish Post</button>
     </form>
   </div>
 </div>
 
 <script>
-  // 🔹 Preview multiple uploaded images
-  function previewImages(event) {
-    const preview = document.getElementById('imagePreview');
-    preview.innerHTML = '';
-
-    const files = event.target.files;
-    if (files.length > 0) {
-      Array.from(files).forEach(file => {
-        const img = document.createElement('img');
-        img.src = URL.createObjectURL(file);
-        img.alt = 'Image Preview';
-        img.classList.add('preview-img');
-        img.style.width = '120px';
-        img.style.height = '120px';
-        img.style.objectFit = 'cover';
-        img.style.borderRadius = '8px';
-        preview.appendChild(img);
-      });
-    }
+function previewImages(event) {
+  const preview = document.getElementById('imagePreview');
+  preview.innerHTML = '';
+  const files = event.target.files;
+  if (files.length > 0) {
+    Array.from(files).forEach(file => {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      img.alt = 'Image Preview';
+      img.classList.add('preview-img');
+      preview.appendChild(img);
+    });
   }
+}
 </script>
 
 <%- include('../../partials/footer') %>

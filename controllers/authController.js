@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const TempUser = require('../models/TempUser'); // NEW
 const Setting = require('../models/Setting');
 const { createToken } = require('../utils/jwt');
 const { sendOTP } = require('../utils/email');
@@ -29,12 +30,6 @@ exports.postLogin = async (req, res) => {
       return res.redirect('/login');
     }
 
-    // ❌ Block login before verification
-    if (!user.isVerified) {
-      req.flash('error_msg', 'Account not verified. Check your email for OTP.');
-      return res.redirect('/login');
-    }
-
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       req.flash('error_msg', 'Invalid email or password.');
@@ -48,7 +43,6 @@ exports.postLogin = async (req, res) => {
       role: user.role,
     };
 
-    // JWT token
     const token = createToken({
       id: user._id,
       email: user.email,
@@ -81,54 +75,60 @@ exports.getSignup = async (req, res) => {
       error_msg: res.locals.error_msg,
     });
   } catch (err) {
-    console.error(err);
+    console.error('Error loading signup page:', err);
     req.flash('error_msg', 'Error loading signup page.');
     return res.redirect('/login');
   }
 };
 
-// 🧩 POST: Signup with OTP
+// 🧩 POST: Signup — send OTP and store in TempUser
 exports.postSignup = async (req, res) => {
   const { name, email, password, confirmPassword } = req.body;
 
   try {
+    // check registration setting
     const settings = await Setting.findOne();
     if (settings && !settings.allowRegistrations) {
       req.flash('error_msg', 'Registrations are disabled.');
       return res.redirect('/signup');
     }
 
+    // validate password
     if (password !== confirmPassword) {
       req.flash('error_msg', 'Passwords do not match.');
       return res.redirect('/signup');
     }
 
+    // block if already registered
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       req.flash('error_msg', 'Email already registered.');
       return res.redirect('/signup');
     }
 
-    const hashed = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const otp = generateOTP();
 
-    const newUser = new User({
+    // delete any old temp records
+    await TempUser.findOneAndDelete({ email });
+
+    // save temp user
+    const tempUser = new TempUser({
       name,
       email,
-      password: hashed,
+      password: hashedPassword,
       otp,
-      otpExpires: Date.now() + 5 * 60 * 1000,
-      isVerified: false
+      otpExpires: Date.now() + 5 * 60 * 1000
     });
 
-    await newUser.save();
-    await sendOTP(email, otp, "Verify Your Account");
+    await tempUser.save();
+    await sendOTP(email, otp, "Your Signup OTP");
 
-    req.flash('success_msg', 'OTP sent to email. Verify account.');
+    req.flash('success_msg', 'OTP sent to email. Enter OTP to complete signup.');
     return res.redirect('/verify');
 
   } catch (err) {
-    console.error(err);
+    console.error('Signup error:', err);
     req.flash('error_msg', 'Error creating account.');
     return res.redirect('/signup');
   }
@@ -143,31 +143,40 @@ exports.getVerify = (req, res) => {
   });
 };
 
-// 🧩 POST: Handle OTP Verification
+// 🧩 POST: Handle OTP Verification & Create Real User
 exports.postVerify = async (req, res) => {
   const { email, otp } = req.body;
 
   try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      req.flash('error_msg', 'Invalid email.');
-      return res.redirect('/verify');
+    const tempUser = await TempUser.findOne({ email });
+    if (!tempUser) {
+      req.flash('error_msg', 'No pending signup found. Please sign up first.');
+      return res.redirect('/signup');
     }
 
-    if (user.otp !== otp || user.otpExpires < Date.now()) {
+    // check OTP
+    if (tempUser.otp !== otp || tempUser.otpExpires < Date.now()) {
       req.flash('error_msg', 'Invalid or expired OTP.');
       return res.redirect('/verify');
     }
 
-    user.isVerified = true;
-    user.otp = undefined;
-    user.otpExpires = undefined;
-    await user.save();
+    // save actual user
+    const newUser = new User({
+      name: tempUser.name,
+      email: tempUser.email,
+      password: tempUser.password,
+      isVerified: true
+    });
+    await newUser.save();
 
-    req.flash('success_msg', 'Verified! You can now log in.');
+    // remove temp
+    await TempUser.deleteOne({ email });
+
+    req.flash('success_msg', 'Signup complete! You can now log in.');
     return res.redirect('/login');
 
   } catch (err) {
+    console.error('Verification error:', err);
     req.flash('error_msg', 'Verification failed.');
     return res.redirect('/verify');
   }
@@ -188,18 +197,21 @@ exports.postForgot = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      req.flash('error_msg', 'No user found.');
+      req.flash('error_msg', 'No user found with that email.');
       return res.redirect('/forgot');
     }
+
     const otp = generateOTP();
     user.otp = otp;
     user.otpExpires = Date.now() + 5 * 60 * 1000;
     await user.save();
-    await sendOTP(email, otp, "Reset Password OTP");
 
-    req.flash('success_msg', 'OTP sent. Check email.');
+    await sendOTP(email, otp, "Reset Password OTP");
+    req.flash('success_msg', 'OTP sent. Check your email.');
     return res.redirect('/reset');
-  } catch {
+
+  } catch (err) {
+    console.error('Forgot password error:', err);
     req.flash('error_msg', 'Error sending OTP.');
     return res.redirect('/forgot');
   }
@@ -214,7 +226,7 @@ exports.getReset = (req, res) => {
   });
 };
 
-// 🧩 POST: Reset Password
+// 🧩 POST: Reset Password with OTP
 exports.postReset = async (req, res) => {
   const { email, otp, newPassword, confirmNewPassword } = req.body;
   try {
@@ -222,11 +234,13 @@ exports.postReset = async (req, res) => {
       req.flash('error_msg', 'Passwords do not match.');
       return res.redirect('/reset');
     }
+
     const user = await User.findOne({ email });
     if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
       req.flash('error_msg', 'Invalid OTP or email.');
       return res.redirect('/reset');
     }
+
     user.password = await bcrypt.hash(newPassword, 10);
     user.otp = undefined;
     user.otpExpires = undefined;
@@ -235,7 +249,8 @@ exports.postReset = async (req, res) => {
     req.flash('success_msg', 'Password reset successful.');
     return res.redirect('/login');
 
-  } catch {
+  } catch (err) {
+    console.error('Reset error:', err);
     req.flash('error_msg', 'Reset failed.');
     return res.redirect('/reset');
   }
